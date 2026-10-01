@@ -1,0 +1,107 @@
+.token-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.token-card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.token-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.token-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-lg);
+}
+
+.token-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.token-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.token-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.token-input-wrapper {
+  position: relative;
+}
+
+.token-input {
+  width: 100%;
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-2xl);
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: var(--color-gray-50);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.token-input::placeholder {
+  color: var(--text-tertiary);
+  letter-spacing: 4px;
+}
+
+.token-input:focus {
+  border-color: var(--color-primary);
+  background: var(--bg-secondary);
+  box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+.token-error {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-error-light);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+}
+
+.token-error p {
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.token-button {
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .token-card {
+    padding: var(--spacing-xl);
+  }
+
+  .token-input {
+    font-size: var(--font-size-xl);
+    letter-spacing: 6px;
+  }
+}
