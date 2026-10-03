@@ -1,0 +1,65 @@
+/* ModulePlaceholder Page — memakai pola halaman
+   existing agar konsisten dengan halaman portal lain. */
+
+.page {
+  max-width: 100%;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xl);
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.page-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.page-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Empty State */
+.empty-state {
+  padding: var(--spacing-2xl);
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-sm);
+  color: var(--text-tertiary);
+}
+
+.empty-state-content h3 {
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+}
+
+.empty-state-content p {
+  font-size: var(--font-size-sm);
+}
+
+.module-placeholder {
+  max-width: var(--container-content);
+}
+
+.module-placeholder .empty-state {
+  padding: var(--spacing-3xl) var(--spacing-lg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+  }
+}

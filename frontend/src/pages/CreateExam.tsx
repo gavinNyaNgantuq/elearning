@@ -4,6 +4,8 @@ import api from '../services/api';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import Select from '../components/Select';
+import BackButton from '../components/BackButton';
 import './CreateExam.css';
 
 export default function CreateExam() {
@@ -46,8 +48,42 @@ export default function CreateExam() {
     setError('');
     setLoading(true);
 
+    // Client-side validation
+    if (!formData.title.trim()) {
+      setError('Judul ujian wajib diisi');
+      setLoading(false);
+      return;
+    }
+    if (!formData.subject_id) {
+      setError('Mata pelajaran wajib dipilih');
+      setLoading(false);
+      return;
+    }
+    if (!formData.class_id) {
+      setError('Kelas wajib dipilih');
+      setLoading(false);
+      return;
+    }
+    if (!formData.start_at) {
+      setError('Waktu mulai wajib diisi');
+      setLoading(false);
+      return;
+    }
+    if (!formData.duration || parseInt(formData.duration) < 1) {
+      setError('Durasi wajib diisi minimal 1 menit');
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await api.post('/exams', formData);
+      // Format datetime for backend (MySQL expects YYYY-MM-DD HH:MM:SS)
+      const submitData = {
+        ...formData,
+        start_at: formData.start_at ? `${formData.start_at}:00` : '',
+      };
+      const response = await api.post('/exams', submitData);
       alert(`Ujian berhasil dibuat! Token: ${response.data.data.token}`);
       navigate('/exams');
     } catch (err: any) {
@@ -61,6 +97,7 @@ export default function CreateExam() {
     <div className="page">
       <div className="page-header">
         <div>
+          <BackButton />
           <h1 className="page-title">Buat Ujian Baru</h1>
           <p className="page-subtitle">Lengkapi informasi ujian di bawah ini</p>
         </div>
@@ -78,37 +115,26 @@ export default function CreateExam() {
           />
 
           <div className="form-row">
-            <div className="form-group">
-              <label className="input-label">Mata Pelajaran</label>
-              <select
-                name="subject_id"
-                value={formData.subject_id}
-                onChange={handleChange}
-                className="input"
-                required
-              >
-                <option value="">Pilih Mata Pelajaran</option>
-                {subjects.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label className="input-label">Kelas</label>
-              <select
-                name="class_id"
-                value={formData.class_id}
-                onChange={handleChange}
-                className="input"
-                required
-              >
-                <option value="">Pilih Kelas</option>
-                {classes.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </div>
+            <Select
+              label="Mata Pelajaran"
+              name="subject_id"
+              value={formData.subject_id}
+              onChange={handleChange}
+              options={subjects.map((s: any) => ({ value: String(s.id), label: s.name }))}
+              placeholder="Pilih Mata Pelajaran"
+              required
+              disabled={loading}
+            />
+            <Select
+              label="Kelas"
+              name="class_id"
+              value={formData.class_id}
+              onChange={handleChange}
+              options={classes.map((c: any) => ({ value: String(c.id), label: c.name }))}
+              placeholder="Pilih Kelas"
+              required
+              disabled={loading}
+            />
           </div>
 
           <div className="form-row">

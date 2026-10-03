@@ -75,6 +75,19 @@ export default function ExamPage() {
     );
   }
 
+  // Soal kosong (token tidak valid / gagal memuat):
+  // tampilkan pesan, jangan render pertanyaan undefined.
+  if (questions.length === 0) {
+    return (
+      <div className="page-loading">
+        <p>Soal ujian tidak ditemukan atau token tidak valid.</p>
+        <Button variant="secondary" onClick={() => navigate('/dashboard')}>
+          Kembali ke Dashboard
+        </Button>
+      </div>
+    );
+  }
+
   const question = questions[currentQuestion];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 

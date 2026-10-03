@@ -1,0 +1,219 @@
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-scrim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  z-index: var(--z-modal);
+  /* Backdrop: fade 200ms (opacity-only, tanpa backdrop-filter
+     agar tetap ringan di perangkat kelas menengah). */
+  animation: kf-fade-in var(--dur-base) var(--ease) both;
+}
+
+.modal-overlay--exit {
+  animation: kf-fade-out 180ms var(--ease) both;
+  pointer-events: none;
+}
+
+.modal {
+  background: var(--glass-bg-thick);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow-lg), var(--glass-highlight);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  /* Dialog: scale 0.96 -> 1 + fade-in, 280ms */
+  animation: kf-modal-in 280ms var(--ease) both;
+}
+
+.modal--exit {
+  animation: kf-modal-out 180ms var(--ease) both;
+}
+
+.modal--sm {
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal--md {
+  width: 100%;
+  max-width: 560px;
+}
+
+.modal--lg {
+  width: 100%;
+  max-width: 720px;
+}
+
+.modal--xl {
+  width: 100%;
+  max-width: 900px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-base) var(--ease),
+    color var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease),
+    transform var(--dur-base) var(--ease);
+  flex-shrink: 0;
+}
+
+.modal-close:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.modal-close:active {
+  transform: scale(0.96);
+  transition-duration: var(--dur-fast);
+}
+
+.modal-close:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.modal-body {
+  padding: var(--spacing-xl);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-top: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+/* Confirmation Modal */
+.confirm-modal {
+  text-align: center;
+  padding: var(--spacing-xl) !important;
+}
+
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.confirm-icon.warning {
+  background: #fff8e1;
+  color: #f57c00;
+}
+
+.confirm-icon.danger {
+  background: #fff0f1;
+  color: var(--color-error);
+}
+
+.confirm-icon.info {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.confirm-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.confirm-message {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-lg);
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: var(--spacing-md);
+    align-items: flex-end;
+  }
+
+  .modal {
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-height: 85vh;
+  }
+
+  .modal-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .modal-body {
+    padding: var(--spacing-lg);
+  }
+
+  .modal-footer {
+    padding: var(--spacing-md) var(--spacing-lg);
+    flex-direction: column-reverse;
+  }
+
+  .modal-footer button {
+    width: 100%;
+  }
+}
+
+/* ------------------------------------------------------------
+   AKSESIBILITAS GERAK
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-overlay--exit,
+  .modal,
+  .modal--exit,
+  .modal-close,
+  .modal-close:active {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}

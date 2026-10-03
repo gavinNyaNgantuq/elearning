@@ -1,0 +1,19 @@
+/* Badge — label ringan, selebar isi teks */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  align-self: flex-start;
+  padding: var(--spacing-xs) var(--spacing-sm-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  border: none;
+}
+
+.badge-blue {
+  color: var(--color-badge-blue);
+  background: var(--color-badge-blue-bg);
+}

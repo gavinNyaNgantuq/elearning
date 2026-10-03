@@ -7,14 +7,14 @@ router.get(
   '/student',
   authenticateToken,
   authorizeRoles('siswa'),
-  assignmentController.getStudentAssignments
+  assignmentController.getByStudent
 );
 
 router.get(
   '/teacher',
   authenticateToken,
   authorizeRoles('guru'),
-  assignmentController.getTeacherAssignments
+  assignmentController.getByTeacher
 );
 
 module.exports = router;

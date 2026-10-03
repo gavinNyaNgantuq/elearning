@@ -4,13 +4,13 @@ const authModel = {
   /**
    * Login user
    */
-  async login(username, password) {
+  async login(identifier, password) {
     const [rows] = await pool.execute(
-      `SELECT u.id, u.username, u.email, u.password, u.role_id, r.name as role_name
+      `SELECT u.id, u.name, u.email, u.password, u.is_active, u.role_id, r.name as role_name
        FROM users u
        JOIN roles r ON u.role_id = r.id
-       WHERE u.username = ? AND u.deleted_at IS NULL`,
-      [username]
+       WHERE (u.email = ? OR u.name = ?) AND u.deleted_at IS NULL`,
+      [identifier, identifier]
     );
     
     if (rows.length === 0) {
@@ -25,7 +25,10 @@ const authModel = {
    */
   async getStudentByUserId(userId) {
     const [rows] = await pool.execute(
-      'SELECT id, class_id, nis FROM students WHERE user_id = ?',
+      `SELECT s.id, s.class_id, s.nis, c.name as class_name
+       FROM students s
+       LEFT JOIN classes c ON s.class_id = c.id
+       WHERE s.user_id = ?`,
       [userId]
     );
     return rows[0] || null;
@@ -51,7 +54,7 @@ const authModel = {
    */
   async findUserByEmail(email) {
     const [rows] = await pool.execute(
-      `SELECT u.id, u.username, u.email, u.role_id, r.name as role_name
+      `SELECT u.id, u.email, u.role_id, r.name as role_name
        FROM users u
        JOIN roles r ON u.role_id = r.id
        WHERE u.email = ? AND u.deleted_at IS NULL`,

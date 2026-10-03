@@ -1,4 +1,5 @@
 import React from 'react';
+import { addRipple } from '../utils/animation';
 import './Button.css';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -16,12 +17,25 @@ export default function Button({
   icon,
   disabled,
   className = '',
+  onPointerDown,
   ...props
 }: ButtonProps) {
+  const isDisabled = disabled || loading;
+
+  // Ripple putih transparan dari titik klik (hanya varian primary).
+  // Murni visual: tidak menyentuh onClick/logika request apa pun.
+  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    onPointerDown?.(e);
+    if (variant !== 'primary' || isDisabled || e.button !== 0) return;
+
+    addRipple(e.currentTarget, e.clientX, e.clientY);
+  };
+
   return (
     <button
       className={`btn btn-${variant} btn-${size} ${className}`}
-      disabled={disabled || loading}
+      disabled={isDisabled}
+      onPointerDown={handlePointerDown}
       {...props}
     >
       {loading ? (

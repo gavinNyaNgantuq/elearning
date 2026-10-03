@@ -10,7 +10,7 @@ import {
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (username: string, password: string, remember?: boolean) => Promise<void>;
+  login: (email: string, password: string, remember?: boolean) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   /** True bila sesi berakhir karena token kedaluwarsa (bukan logout manual). */

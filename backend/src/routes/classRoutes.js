@@ -17,4 +17,28 @@ router.get(
   classController.getById
 );
 
+// Create class (Admin only)
+router.post(
+  '/',
+  authenticateToken,
+  authorizeRoles('admin'),
+  classController.create
+);
+
+// Update class (Admin only)
+router.put(
+  '/:id',
+  authenticateToken,
+  authorizeRoles('admin'),
+  classController.update
+);
+
+// Soft delete class (Admin only)
+router.delete(
+  '/:id',
+  authenticateToken,
+  authorizeRoles('admin'),
+  classController.delete
+);
+
 module.exports = router;

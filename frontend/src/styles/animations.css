@@ -1,0 +1,369 @@
+/* ============================================================
+   ANIMATION SYSTEM — Liquid Glass
+   ------------------------------------------------------------
+   Satu sistem animasi reusable untuk seluruh website.
+   Dipanggil lewat kelas utilitas di bawah; nilai visual
+   diambil dari variables.css (token --ease, --dur-*, --rgb-*).
+
+   PRINSIP:
+     - Subtle > flashy. Durasi pendek, easing lembut (--ease).
+     - Hanya properti GPU-friendly yang dianimasikan:
+       transform, opacity, background-color, box-shadow,
+       border-color. TIDAK ada animasi width/height/top/left.
+     - Tidak ada bounce, shake berulang, blink, atau spin
+       selain loading spinner.
+     - Keyframe sengaja menyimpan state awal di `from`, bukan
+       di elemen dasar — sehingga bila animasi dimatikan
+       (prefers-reduced-motion), elemen tetap tampil normal.
+     - Elemen glass (backdrop-filter) hanya dianimasikan
+       transform/opacity dengan durasi pendek.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. KEYFRAMES (nama berawalan kf- agar tidak bentrok dengan
+      keyframes lama: fadeIn, slideUp, slideIn, scaleIn, spin)
+   ------------------------------------------------------------ */
+
+@keyframes kf-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes kf-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Entry konten/halaman: fade + naik 8px */
+@keyframes kf-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Dropdown/menu: fade + turun 4px */
+@keyframes kf-drop-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal dialog: scale 0.96 -> 1 + fade */
+@keyframes kf-modal-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Tutup modal: kebalikan, lebih cepat */
+@keyframes kf-modal-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.96); }
+}
+
+/* Panel samping: masuk dari kanan */
+@keyframes kf-panel-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Toast: masuk dari kanan */
+@keyframes kf-toast-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Ripple: diperbesar dari titik klik lalu hilang.
+   Ukuran final diatur JS (diameter >= diagonal tombol),
+   jadi keyframe cukup scale 0 -> 1. */
+@keyframes kf-ripple {
+  from { opacity: 0.35; transform: scale(0); }
+  to   { opacity: 0;    transform: scale(1); }
+}
+
+/* Skeleton shimmer: sapuan kilau lembut, loop pelan */
+@keyframes kf-shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+/* Grafik: batang tumbuh dari bawah */
+@keyframes kf-bar-grow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* Form error: shake ringan SATU kali, maksimal 4px */
+@keyframes kf-shake-once {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-4px); }
+  55%  { transform: translateX(3px); }
+  80%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* ------------------------------------------------------------
+   2. PAGE ENTRY
+   Konten baru setelah pindah route: fade + rise, 240ms.
+   Sidebar/header TIDAK ikut beranimasi (kelas ini hanya
+   diterapkan pada konten main).
+   ------------------------------------------------------------ */
+.page-enter {
+  animation: kf-rise 240ms var(--ease) both;
+}
+
+/* ------------------------------------------------------------
+   3. CARD REVEAL
+   Fade + rise sekali saat halaman dibuka, delay antar card
+   40ms, maksimal 8 card pertama. Card ke-9 dst tampil
+   langsung tanpa animasi.
+   ------------------------------------------------------------ */
+.reveal-grid > * {
+  animation: kf-rise var(--dur-slow) var(--ease) both;
+}
+
+.reveal-grid > :nth-child(1)  { animation-delay: 0ms; }
+.reveal-grid > :nth-child(2)  { animation-delay: 40ms; }
+.reveal-grid > :nth-child(3)  { animation-delay: 80ms; }
+.reveal-grid > :nth-child(4)  { animation-delay: 120ms; }
+.reveal-grid > :nth-child(5)  { animation-delay: 160ms; }
+.reveal-grid > :nth-child(6)  { animation-delay: 200ms; }
+.reveal-grid > :nth-child(7)  { animation-delay: 240ms; }
+.reveal-grid > :nth-child(8)  { animation-delay: 280ms; }
+.reveal-grid > :nth-child(n + 9) { animation: none; }
+
+/* ------------------------------------------------------------
+   4. DROPDOWN
+   Menu/dropdown custom: fade + translateY(4px -> 0), 160ms.
+   ------------------------------------------------------------ */
+.dropdown-enter {
+  animation: kf-drop-in 160ms var(--ease) both;
+}
+
+/* ------------------------------------------------------------
+   4b. PANEL SAMPING
+   Masuk dari kanan, 320ms (fade + geser tipis, bukan slide
+   penuh agar tidak mengganggu layout).
+   ------------------------------------------------------------ */
+.panel-enter {
+  animation: kf-panel-in var(--dur-slow) var(--ease) both;
+}
+
+/* ------------------------------------------------------------
+   5. TOOLTIP
+   CSS-only utility: fade-in 150ms, delay 300ms saat hover.
+   Pakai: <span class="tip" data-tip="Teks">...</span>
+   ------------------------------------------------------------ */
+.tip {
+  position: relative;
+}
+
+.tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-snug);
+  color: var(--text-primary);
+  background: var(--glass-bg-solid);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  backdrop-filter: var(--glass-blur-sm);
+  border: var(--border-width-thin) solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  padding: 4px 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms var(--ease);
+  z-index: var(--z-tooltip);
+}
+
+.tip:hover::after,
+.tip:focus-visible::after {
+  opacity: 1;
+  transition-delay: 300ms;
+}
+
+/* ------------------------------------------------------------
+   6. TOAST
+   Masuk dari kanan atas 240ms; auto-dismiss (4 detik)
+   ditangani JS pemakainya. Keluar: fade-out.
+   ------------------------------------------------------------ */
+.toast-anim {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  z-index: var(--z-toast);
+  max-width: 360px;
+  animation: kf-toast-in 240ms var(--ease) both;
+}
+
+.toast-anim.out {
+  animation: kf-fade-out var(--dur-base) var(--ease) both;
+}
+
+/* ------------------------------------------------------------
+   7. SKELETON LOADING
+   Shimmer lembut 1.4 detik, looping pelan.
+   ------------------------------------------------------------ */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-bg-thin);
+  border: var(--border-width-thin) solid var(--glass-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(var(--rgb-white), 0) 20%,
+    rgba(var(--rgb-white), 0.55) 50%,
+    rgba(var(--rgb-white), 0) 80%
+  );
+  transform: translateX(-100%);
+  animation: kf-shimmer 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.skeleton-text {
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-line {
+  height: 10px;
+  border-radius: var(--radius-sm);
+}
+
+/* Layout skeleton untuk kartu tabel — tinggi & lebar mendekati
+   konten akhir agar transisi skeleton -> konten tidak melompat. */
+.table-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  min-height: 320px;
+}
+
+.table-skeleton .skeleton {
+  height: 16px;
+}
+
+.table-skeleton .skeleton:nth-child(1) { width: 35%; }
+.table-skeleton .skeleton:nth-child(2) { width: 85%; }
+.table-skeleton .skeleton:nth-child(3) { width: 70%; }
+.table-skeleton .skeleton:nth-child(4) { width: 90%; }
+.table-skeleton .skeleton:nth-child(5) { width: 60%; }
+.table-skeleton .skeleton:nth-child(6) { width: 78%; }
+
+/* ------------------------------------------------------------
+   8. RIPPLE
+   Kilau putih transparan dari titik klik, maksimal 400ms.
+   Elemen induk harus position:relative + overflow:hidden
+   (diset pada tombol di Phase 2).
+   ------------------------------------------------------------ */
+.ripple-span {
+  position: absolute;
+  border-radius: var(--radius-full);
+  background: rgba(var(--rgb-white), 0.35);
+  transform: scale(0);
+  pointer-events: none;
+  animation: kf-ripple 400ms var(--ease) forwards;
+}
+
+/* ------------------------------------------------------------
+   9. GRAFIK
+   Batang tumbuh dari bawah, 500ms, hanya ketika pertama
+   tampil (animasi CSS berjalan sekali saat elemen mount).
+   ------------------------------------------------------------ */
+.anim-bar-grow {
+  transform-origin: bottom;
+  animation: kf-bar-grow 500ms var(--ease) both;
+}
+
+/* ------------------------------------------------------------
+   10. FORM ERROR
+   Shake ringan SATU kali saat elemen mendapat state error
+   (kelas ditambahkan oleh React saat error muncul); pesan
+   error fade-in.
+   ------------------------------------------------------------ */
+.anim-shake-once {
+  animation: kf-shake-once var(--dur-base) var(--ease);
+}
+
+.anim-error-msg {
+  animation: kf-fade-in var(--dur-fast) var(--ease) both;
+}
+
+/* ------------------------------------------------------------
+   11. PAGE TRANSITION VEIL
+   Overlay translusen opacity-only di atas konten main saat
+   pindah halaman: menutup konten lama (perasaan fade-out
+   120ms), lalu terbuka saat konten baru fade-in.
+   ------------------------------------------------------------ */
+.page-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: var(--bg-primary);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.page-veil.is-in {
+  opacity: 1;
+}
+
+.page-veil.is-out {
+  opacity: 0;
+  transition-duration: 180ms;
+}
+
+/* ------------------------------------------------------------
+   12. REDUCED MOTION
+   Matikan transform/movement; perubahan warna dan fade
+   singkat tetap boleh. Elemen tidak boleh tersangkut di
+   state tersembunyi.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .panel-enter,
+  .reveal-grid > *,
+  .dropdown-enter,
+  .toast-anim,
+  .toast-anim.out,
+  .anim-bar-grow,
+  .anim-shake-once,
+  .anim-error-msg {
+    animation: none !important;
+  }
+
+  .ripple-span {
+    display: none;
+  }
+
+  .input-error,
+  .select-wrapper.has-error .select-input {
+    animation: none !important;
+  }
+
+  .skeleton::after {
+    animation: none !important;
+    opacity: 0;
+  }
+
+  .page-veil {
+    transition: none;
+  }
+
+  .tip::after {
+    transition: opacity 80ms linear;
+    transition-delay: 0ms;
+  }
+}

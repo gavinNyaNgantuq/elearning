@@ -4,6 +4,7 @@ import api from '../services/api';
 import { ExamResult as ExamResultType } from '../types';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import { useCountUp } from '../utils/animation';
 import './ExamResult.css';
 
 export default function ExamResult() {
@@ -29,6 +30,20 @@ export default function ExamResult() {
     }
   };
 
+  const percentage =
+    result && result.total_questions > 0
+      ? Math.round((result.correct_answers / result.total_questions) * 100)
+      : 0;
+  const totalQuestions = result ? result.total_questions : 0;
+  const correctAnswers = result ? result.correct_answers : 0;
+
+  // Count-up statistik: tampilan saja, data asli tidak berubah.
+  // Dipanggil sebelum early return agar jumlah hook tetap stabil.
+  const displayPercentage = useCountUp(percentage);
+  const displayTotal = useCountUp(totalQuestions);
+  const displayCorrect = useCountUp(correctAnswers);
+  const displayWrong = useCountUp(totalQuestions - correctAnswers);
+
   if (loading) {
     return (
       <div className="page-loading">
@@ -37,8 +52,6 @@ export default function ExamResult() {
       </div>
     );
   }
-
-  const percentage = result ? Math.round((result.correct_answers / result.total_questions) * 100) : 0;
 
   return (
     <div className="result-page">
@@ -57,21 +70,21 @@ export default function ExamResult() {
           <>
             <div className="result-score">
               <div className="score-circle">
-                <span className="score-value">{percentage}%</span>
+                <span className="score-value">{displayPercentage}%</span>
               </div>
             </div>
 
             <div className="result-stats">
               <div className="stat-item">
-                <span className="stat-value">{result.total_questions}</span>
+                <span className="stat-value">{displayTotal}</span>
                 <span className="stat-label">Total Soal</span>
               </div>
               <div className="stat-item">
-                <span className="stat-value stat-success">{result.correct_answers}</span>
+                <span className="stat-value stat-success">{displayCorrect}</span>
                 <span className="stat-label">Jawaban Benar</span>
               </div>
               <div className="stat-item">
-                <span className="stat-value stat-error">{result.total_questions - result.correct_answers}</span>
+                <span className="stat-value stat-error">{displayWrong}</span>
                 <span className="stat-label">Jawaban Salah</span>
               </div>
             </div>

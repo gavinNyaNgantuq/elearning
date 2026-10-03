@@ -5,6 +5,7 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 
 // Login & profil (existing)
 router.post('/login', authController.login);
+router.post('/logout', authenticateToken, authController.logout);
 router.get('/profile', authenticateToken, authController.getProfile);
 
 // Lupa password: minta OTP -> verifikasi OTP -> ganti password

@@ -1,8 +1,10 @@
 export interface User {
   id: number;
-  username: string;
+  name: string;
   email: string;
   role: 'admin' | 'guru' | 'siswa';
+  class_name?: string;
+  nis?: string;
 }
 
 export interface Exam {

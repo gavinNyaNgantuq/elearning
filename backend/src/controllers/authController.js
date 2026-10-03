@@ -30,20 +30,21 @@ const authController = {
    */
   async login(req, res) {
     try {
-      const { username, password } = req.body;
+      const { email, username, password } = req.body;
+      const identifier = email || username;
 
-      if (!username || !password) {
+      if (!identifier || !password) {
         return res.status(400).json({
           success: false,
-          message: 'Username dan password wajib diisi'
+          message: 'Email dan password wajib diisi'
         });
       }
 
-      const user = await authModel.login(username, password);
+      const user = await authModel.login(identifier, password);
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: 'Username atau password salah'
+          message: 'Email atau password salah'
         });
       }
 
@@ -52,7 +53,7 @@ const authController = {
       if (!isPasswordValid) {
         return res.status(401).json({
           success: false,
-          message: 'Username atau password salah'
+          message: 'Email atau password salah'
         });
       }
 
@@ -70,7 +71,7 @@ const authController = {
       const token = jwt.sign(
         {
           id: user.id,
-          username: user.username,
+          name: user.name,
           email: user.email,
           role: user.role_name,
           student_id: studentData?.id || null,
@@ -88,9 +89,11 @@ const authController = {
           token,
           user: {
             id: user.id,
-            username: user.username,
+            name: user.name,
             email: user.email,
-            role: user.role_name
+            role: user.role_name,
+            nis: studentData?.nis || null,
+            class_name: studentData?.class_name || null
           }
         }
       });
@@ -104,6 +107,19 @@ const authController = {
   },
 
   /**
+   * Logout user.
+   * JWT bersifat stateless, sehingga invalidasi dilakukan
+   * di client (hapus token dari storage). Endpoint ini
+   * dipanggil agar logout tercatat di sisi server.
+   */
+  async logout(req, res) {
+    res.json({
+      success: true,
+      message: 'Logout berhasil'
+    });
+  },
+
+  /**
    * Get current user profile
    */
   async getProfile(req, res) {
@@ -112,7 +128,7 @@ const authController = {
         success: true,
         data: {
           id: req.user.id,
-          username: req.user.username,
+          name: req.user.name,
           email: req.user.email,
           role: req.user.role
         }

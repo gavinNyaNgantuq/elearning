@@ -17,4 +17,28 @@ router.get(
   subjectController.getById
 );
 
+// Create subject (Admin only)
+router.post(
+  '/',
+  authenticateToken,
+  authorizeRoles('admin'),
+  subjectController.create
+);
+
+// Update subject (Admin only)
+router.put(
+  '/:id',
+  authenticateToken,
+  authorizeRoles('admin'),
+  subjectController.update
+);
+
+// Soft delete subject (Admin only)
+router.delete(
+  '/:id',
+  authenticateToken,
+  authorizeRoles('admin'),
+  subjectController.delete
+);
+
 module.exports = router;

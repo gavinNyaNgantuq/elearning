@@ -24,4 +24,28 @@ router.get(
   scheduleController.getTeacherSchedule
 );
 
+// Create schedule (Admin only)
+router.post(
+  '/',
+  authenticateToken,
+  authorizeRoles('admin'),
+  scheduleController.create
+);
+
+// Update schedule (Admin only)
+router.put(
+  '/:id',
+  authenticateToken,
+  authorizeRoles('admin'),
+  scheduleController.update
+);
+
+// Soft delete schedule (Admin only)
+router.delete(
+  '/:id',
+  authenticateToken,
+  authorizeRoles('admin'),
+  scheduleController.delete
+);
+
 module.exports = router;

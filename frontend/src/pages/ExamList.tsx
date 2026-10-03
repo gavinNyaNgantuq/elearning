@@ -4,6 +4,7 @@ import api from '../services/api';
 import { Exam } from '../types';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import BackButton from '../components/BackButton';
 import './ExamList.css';
 
 export default function ExamList() {
@@ -28,9 +29,25 @@ export default function ExamList() {
 
   if (loading) {
     return (
-      <div className="page-loading">
-        <div className="loading-spinner" />
-        <p>Memuat data...</p>
+      <div className="page">
+        <div className="page-header">
+          <div>
+            <BackButton />
+            <h1 className="page-title">Daftar Ujian</h1>
+            <p className="page-subtitle">Kelola semua ujian yang telah dibuat</p>
+          </div>
+        </div>
+
+        <Card className="table-card">
+          <div className="table-skeleton" aria-hidden="true">
+            <div className="skeleton" />
+            <div className="skeleton" />
+            <div className="skeleton" />
+            <div className="skeleton" />
+            <div className="skeleton" />
+            <div className="skeleton" />
+          </div>
+        </Card>
       </div>
     );
   }
@@ -39,6 +56,7 @@ export default function ExamList() {
     <div className="page">
       <div className="page-header">
         <div>
+          <BackButton />
           <h1 className="page-title">Daftar Ujian</h1>
           <p className="page-subtitle">Kelola semua ujian yang telah dibuat</p>
         </div>

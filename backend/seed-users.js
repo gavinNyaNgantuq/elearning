@@ -26,10 +26,10 @@ async function seedUsers() {
     const [majors] = await pool.execute('SELECT * FROM majors');
     if (majors.length === 0) {
       console.log('Membuat majors...');
-      await pool.execute('INSERT INTO majors (id, name) VALUES (1, ?)', ['MP']);
-      await pool.execute('INSERT INTO majors (id, name) VALUES (2, ?)', ['TKJ']);
-      await pool.execute('INSERT INTO majors (id, name) VALUES (3, ?)', ['AK']);
-      await pool.execute('INSERT INTO majors (id, name) VALUES (4, ?)', ['DKV']);
+      await pool.execute('INSERT INTO majors (id, name, code) VALUES (1, ?, ?)', ['MP', 'MP']);
+      await pool.execute('INSERT INTO majors (id, name, code) VALUES (2, ?, ?)', ['TKJ', 'TKJ']);
+      await pool.execute('INSERT INTO majors (id, name, code) VALUES (3, ?, ?)', ['AK', 'AK']);
+      await pool.execute('INSERT INTO majors (id, name, code) VALUES (4, ?, ?)', ['DKV', 'DKV']);
     } else {
       console.log('Majors sudah ada');
     }
@@ -58,10 +58,10 @@ async function seedUsers() {
     }
 
     // Buat akun Admin
-    const [adminExists] = await pool.execute('SELECT * FROM users WHERE username = ?', ['admin']);
+    const [adminExists] = await pool.execute('SELECT * FROM users WHERE name = ?', ['admin']);
     if (adminExists.length === 0) {
       await pool.execute(
-        'INSERT INTO users (role_id, username, email, password) VALUES (?, ?, ?, ?)',
+        'INSERT INTO users (role_id, name, email, password) VALUES (?, ?, ?, ?)',
         [1, 'admin', 'admin@school.com', password]
       );
       console.log('Akun Admin dibuat: admin / password123');
@@ -70,10 +70,10 @@ async function seedUsers() {
     }
 
     // Buat akun Guru
-    const [guruExists] = await pool.execute('SELECT * FROM users WHERE username = ?', ['guru']);
+    const [guruExists] = await pool.execute('SELECT * FROM users WHERE name = ?', ['guru']);
     if (guruExists.length === 0) {
       const [result] = await pool.execute(
-        'INSERT INTO users (role_id, username, email, password) VALUES (?, ?, ?, ?)',
+        'INSERT INTO users (role_id, name, email, password) VALUES (?, ?, ?, ?)',
         [2, 'guru', 'guru@school.com', password]
       );
       await pool.execute(
@@ -86,10 +86,10 @@ async function seedUsers() {
     }
 
     // Buat akun Siswa
-    const [siswaExists] = await pool.execute('SELECT * FROM users WHERE username = ?', ['siswa']);
+    const [siswaExists] = await pool.execute('SELECT * FROM users WHERE name = ?', ['siswa']);
     if (siswaExists.length === 0) {
       const [result] = await pool.execute(
-        'INSERT INTO users (role_id, username, email, password) VALUES (?, ?, ?, ?)',
+        'INSERT INTO users (role_id, name, email, password) VALUES (?, ?, ?, ?)',
         [3, 'siswa', 'siswa@school.com', password]
       );
       await pool.execute(
