@@ -11,7 +11,7 @@ const assignmentModel = {
        LEFT JOIN subjects sub ON a.subject_id = sub.id
        LEFT JOIN classes c ON a.class_id = c.id
        WHERE a.class_id = ? AND a.deleted_at IS NULL
-       ORDER BY a.due_date ASC`,
+       ORDER BY a.deadline ASC`,
       [classId]
     );
     return rows;
@@ -27,7 +27,7 @@ const assignmentModel = {
        LEFT JOIN subjects sub ON a.subject_id = sub.id
        LEFT JOIN classes c ON a.class_id = c.id
        WHERE a.teacher_id = ? AND a.deleted_at IS NULL
-       ORDER BY a.due_date ASC`,
+       ORDER BY a.deadline ASC`,
       [teacherId]
     );
     return rows;
@@ -68,7 +68,7 @@ const assignmentModel = {
       params.push(`%${search}%`);
     }
 
-    query += ` ORDER BY a.due_date ASC LIMIT ? OFFSET ?`;
+    query += ` ORDER BY a.deadline ASC LIMIT ? OFFSET ?`;
     params.push(limit, (page - 1) * limit);
 
     const [rows] = await pool.execute(query, params);
@@ -134,7 +134,7 @@ const assignmentModel = {
     const { teacher_id, subject_id, class_id, title, description, deadline, created_by } = assignmentData;
     const [result] = await pool.execute(
       `INSERT INTO assignments (teacher_id, subject_id, class_id, title, description, deadline, created_at, created_by)
-       VALUES (?, ?, ?, ?, ?, NOW(), ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)`,
       [teacher_id, subject_id, class_id, title, description || null, deadline, created_by || 1]
     );
     return { id: result.insertId, ...assignmentData };
@@ -191,7 +191,7 @@ const assignmentModel = {
        LEFT JOIN subjects sub ON a.subject_id = sub.id
        LEFT JOIN classes c ON a.class_id = c.id
        WHERE a.class_id = ? AND a.deleted_at IS NULL
-       ORDER BY a.due_date ASC`,
+       ORDER BY a.deadline ASC`,
       [classId]
     );
     return rows;
@@ -207,7 +207,7 @@ const assignmentModel = {
        LEFT JOIN subjects sub ON a.subject_id = sub.id
        LEFT JOIN classes c ON a.class_id = c.id
        WHERE a.teacher_id = ? AND a.deleted_at IS NULL
-       ORDER BY a.due_date ASC`,
+       ORDER BY a.deadline ASC`,
       [teacherId]
     );
     return rows;

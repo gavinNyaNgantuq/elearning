@@ -20,6 +20,7 @@ const teacherRoutes = require('./routes/teacherRoutes');
 const userRoutes = require('./routes/userRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const tahunAjaranRoutes = require('./routes/tahunAjaranRoutes');
+const correctionRoutes = require('./routes/correctionRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -59,6 +60,7 @@ app.use('/api/teachers', teacherRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/tahun-ajaran', tahunAjaranRoutes);
+app.use('/api/corrections', correctionRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

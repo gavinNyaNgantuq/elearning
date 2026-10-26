@@ -160,7 +160,8 @@ const submissionController = {
       }
 
       // Don't allow update if already graded
-      if (submission.grade !== null && req.user.role === 'siswa') {
+      const gradedScore = submission.score ?? submission.grade;
+      if (gradedScore !== null && gradedScore !== undefined && req.user.role === 'siswa') {
         return res.status(400).json({
           success: false,
           message: 'Tidak bisa mengubah pengumpulan yang sudah dinilai'
@@ -168,7 +169,7 @@ const submissionController = {
       }
 
       const updated = await submissionModel.update(id, {
-        file_path: file_path || submission.file_path
+        file: file_path || submission.file || submission.file_path
       });
 
       if (!updated) {
@@ -277,7 +278,8 @@ const submissionController = {
       }
 
       // Don't allow delete if already graded
-      if (submission.grade !== null && req.user.role === 'siswa') {
+      const gradedScoreDel = submission.score ?? submission.grade;
+      if (gradedScoreDel !== null && gradedScoreDel !== undefined && req.user.role === 'siswa') {
         return res.status(400).json({
           success: false,
           message: 'Tidak bisa menghapus pengumpulan yang sudah dinilai'

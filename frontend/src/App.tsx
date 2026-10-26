@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import ExamList from './pages/ExamList';
 import CreateExam from './pages/CreateExam';
 import ExamManagement from './pages/ExamManagement';
+import ExamCorrection from './pages/ExamCorrection';
 import EnterToken from './pages/EnterToken';
 import ExamPage from './pages/ExamPage';
 import ExamResult from './pages/ExamResult';
@@ -21,6 +22,7 @@ import ModulePlaceholder from './pages/ModulePlaceholder';
 import StudentsAdmin from './pages/StudentsAdmin';
 import TeachersAdmin from './pages/TeachersAdmin';
 import TahunAjaran from './pages/TahunAjaran';
+import NotFound from './pages/NotFound';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -53,8 +55,23 @@ function App() {
             <Route path="/exams" element={<ExamList />} />
             <Route path="/exams/create" element={<CreateExam />} />
             <Route path="/exams/manage" element={<ExamManagement />} />
-            <Route path="/classes" element={<Classes />} />
-            <Route path="/subjects" element={<Subjects />} />
+            <Route path="/correction" element={<ExamCorrection />} />
+            <Route
+              path="/classes"
+              element={
+                <AdminRoute>
+                  <Classes />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/subjects"
+              element={
+                <AdminRoute>
+                  <Subjects />
+                </AdminRoute>
+              }
+            />
             <Route path="/schedules" element={<Schedules />} />
             <Route path="/materials" element={<Materials />} />
             <Route path="/assignments" element={<Assignments />} />
@@ -108,6 +125,7 @@ function App() {
             <Route path="/exam/:token/result" element={<ExamResult />} />
           </Route>
           <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

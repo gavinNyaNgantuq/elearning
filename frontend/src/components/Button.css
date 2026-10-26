@@ -1,12 +1,10 @@
 /* ============================================================
-   BUTTON — Liquid Glass
-   ------------------------------------------------------------
+   BUTTON — Clean Modern
    Varian & ukuran TIDAK berubah (primary | secondary | danger |
    ghost / sm | md | lg) sehingga semua pemakaian di TSX aman.
    ============================================================ */
 
 .btn {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +12,6 @@
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  letter-spacing: var(--letter-spacing-snug);
   line-height: var(--line-height-tight);
   border: var(--border-width-thin) solid transparent;
   border-radius: var(--radius-md);
@@ -22,31 +19,18 @@
   white-space: nowrap;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  overflow: hidden; /* wadah ripple (pointer-events:none, tidak memotong shadow) */
+  position: relative;
+  overflow: hidden;
   transition:
-    transform var(--dur-base) var(--ease),
-    box-shadow var(--dur-base) var(--ease),
-    background-color var(--dur-base) var(--ease),
-    border-color var(--dur-base) var(--ease),
-    color var(--dur-base) var(--ease),
-    opacity var(--dur-fast) var(--ease);
-}
-
-/* Angkat halus saat hover */
-.btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
-/* Tekan — meniru respons fisik perangkat Apple (120ms) */
-.btn:active:not(:disabled) {
-  transform: scale(0.96);
-  transition-duration: var(--dur-fast);
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.55;
   cursor: not-allowed;
-  transform: none;
 }
 
 /* ------------------------------------------------------------
@@ -56,30 +40,28 @@
   padding: 6px 12px;
   font-size: var(--font-size-xs);
   border-radius: var(--radius-sm);
+  min-height: 32px;
 }
 
 .btn-md {
-  padding: 10px 16px;
+  padding: 9px 16px;
+  min-height: 40px;
 }
 
 .btn-lg {
-  padding: 13px 26px;
+  padding: 12px 24px;
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
+  min-height: 48px;
 }
 
 /* ------------------------------------------------------------
    VARIAN
    ------------------------------------------------------------ */
-
-/* Utama — permukaan kaca berwarna: warna brand solid di lapisan
-   bawah, kilau glass di lapisan atas lewat gradien. */
 .btn-primary {
   background-color: var(--color-primary);
-  background-image: var(--btn-sheen);
   color: var(--text-inverse);
-  border-color: var(--btn-edge);
   box-shadow: var(--btn-primary-shadow);
 }
 
@@ -90,36 +72,28 @@
 
 .btn-primary:active:not(:disabled) {
   background-color: var(--color-primary-active);
-  box-shadow: var(--btn-primary-shadow-active);
 }
 
-/* Sekunder — kaca transparan penuh */
 .btn-secondary {
-  background: var(--glass-bg-thick);
-  -webkit-backdrop-filter: var(--glass-blur-sm);
-  backdrop-filter: var(--glass-blur-sm);
+  background: var(--bg-secondary);
   color: var(--text-primary);
-  border-color: var(--glass-border);
+  border-color: var(--border-medium);
   box-shadow: var(--btn-soft-shadow);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--glass-bg-solid);
-  border-color: var(--glass-border-hover);
+  background: var(--bg-tertiary);
+  border-color: var(--border-strong);
   box-shadow: var(--btn-soft-shadow-hover);
 }
 
 .btn-secondary:active:not(:disabled) {
-  background: var(--glass-bg-thick);
-  box-shadow: var(--shadow-inner);
+  background: var(--border-light);
 }
 
-/* Bahaya — kaca merah */
 .btn-danger {
   background-color: var(--color-error);
-  background-image: var(--btn-sheen-danger);
   color: var(--text-inverse);
-  border-color: var(--btn-edge-danger);
   box-shadow: var(--btn-danger-shadow);
 }
 
@@ -128,7 +102,6 @@
   box-shadow: var(--btn-danger-shadow-hover);
 }
 
-/* Hantu — transparan, muncul kaca saat hover */
 .btn-ghost {
   background: transparent;
   color: var(--text-secondary);
@@ -137,12 +110,8 @@
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background: var(--glass-bg-thick);
-  -webkit-backdrop-filter: var(--glass-blur-sm);
-  backdrop-filter: var(--glass-blur-sm);
-  border-color: var(--glass-border-subtle);
+  background: var(--bg-tertiary);
   color: var(--text-primary);
-  box-shadow: var(--glass-highlight);
 }
 
 /* ------------------------------------------------------------
@@ -184,10 +153,8 @@
    AKSESIBILITAS GERAK
    ------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
-  .btn,
-  .btn:active:not(:disabled) {
+  .btn {
     transition: none;
-    transform: none;
   }
 
   .spinner {

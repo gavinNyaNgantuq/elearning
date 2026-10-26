@@ -1,41 +1,18 @@
 /* ============================================================
-   CARD — Liquid Glass
-   ------------------------------------------------------------
-   Kelas (.card, .card-hover) TIDAK berubah.
+   CARD — Clean Modern
+   Kelas (.card, .card-hover, .card-compact, .card-solid,
+   .card-accent) TIDAK berubah.
    ============================================================ */
 
 .card {
-  position: relative;
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border: var(--border-width-thin) solid var(--glass-border);
-  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  border: var(--border-width-thin) solid var(--border-light);
+  border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
-  box-shadow: var(--glass-shadow), var(--glass-highlight);
-  overflow: hidden;
+  box-shadow: var(--shadow-sm);
   transition:
-    transform var(--dur-base) var(--ease),
-    box-shadow var(--dur-base) var(--ease),
-    border-color var(--dur-base) var(--ease),
-    background-color var(--dur-base) var(--ease);
-}
-
-/* Kilau — lapisan gradien tipis di atas permukaan kaca.
-   Diposisikan absolute sehingga tidak menambah tinggi konten. */
-.card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--glass-sheen);
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Konten di atas lapisan kilau */
-.card > * {
-  position: relative;
-  z-index: 1;
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .card-hover {
@@ -43,37 +20,24 @@
 }
 
 .card-hover:hover {
-  background: var(--glass-bg-thick);
-  border-color: var(--glass-border-hover);
-  box-shadow: var(--glass-shadow-lg), var(--glass-highlight);
-  transform: translateY(-2px);
-}
-
-.card-hover:active {
-  transform: scale(0.96);
-  transition-duration: var(--dur-fast);
-  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-md);
 }
 
 .card-hover:focus-visible {
   outline: none;
-  box-shadow: var(--shadow-focus), var(--glass-highlight);
+  box-shadow: var(--shadow-focus);
 }
 
-/* ------------------------------------------------------------
-   VARIASI MODIFIER
-   (kelas baru — opsional, tidak memaksa perubahan di TSX)
-   ------------------------------------------------------------ */
-
-/* Padat — untuk kartu berukuran kecil/risih dengan padding besar */
+/* Padat — untuk konten ringkas */
 .card-compact {
   padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
 }
 
-/* Kaca tebal — untuk permukaan di atas konten ramai */
+/* Solid — sama dengan card standar */
 .card-solid {
-  background: var(--glass-bg-thick);
+  background: var(--bg-secondary);
 }
 
 /* Aksen — garis warna tipis di tepi kiri */
@@ -86,10 +50,7 @@
    ------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .card-hover,
-  .card-hover:hover,
-  .card-hover:active {
+  .card-hover {
     transition: none;
-    transform: none;
   }
 }

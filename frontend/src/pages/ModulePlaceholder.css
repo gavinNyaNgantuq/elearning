@@ -1,65 +1,37 @@
-/* ModulePlaceholder Page — memakai pola halaman
-   existing agar konsisten dengan halaman portal lain. */
-
-.page {
-  max-width: 100%;
+/* ModulePlaceholder — Clean Modern */
+.module-placeholder {
+  max-width: 560px;
+  margin: 0 auto;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--spacing-xl);
-  gap: var(--spacing-lg);
-  flex-wrap: wrap;
+.module-placeholder .empty-state {
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl) var(--spacing-lg);
+  text-align: center;
 }
 
-.page-title {
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
-}
-
-.page-subtitle {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-/* Empty State */
-.empty-state {
-  padding: var(--spacing-2xl);
-}
-
-.empty-state-content {
+.module-placeholder .empty-state-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
   gap: var(--spacing-sm);
   color: var(--text-tertiary);
 }
 
-.empty-state-content h3 {
-  color: var(--text-primary);
+.module-placeholder .empty-state-content svg {
+  color: var(--border-medium);
+}
+
+.module-placeholder .empty-state-content h3 {
   font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
 }
 
-.empty-state-content p {
+.module-placeholder .empty-state-content p {
   font-size: var(--font-size-sm);
-}
-
-.module-placeholder {
-  max-width: var(--container-content);
-}
-
-.module-placeholder .empty-state {
-  padding: var(--spacing-3xl) var(--spacing-lg);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-  }
+  margin: 0;
 }

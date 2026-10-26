@@ -188,7 +188,7 @@ const studentController = {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { class_id, nis } = req.body;
+      const { name, class_id, nis } = req.body;
 
       const student = await studentModel.getById(id);
       if (!student) {
@@ -198,7 +198,7 @@ const studentController = {
         });
       }
 
-      // Cek NIS unik
+      // Cek NIS unik (hanya bila NIS berubah)
       if (nis && nis !== student.nis) {
         const existing = await pool.execute(
           'SELECT id FROM students WHERE nis = ? AND id != ? AND deleted_at IS NULL',
@@ -212,9 +212,17 @@ const studentController = {
         }
       }
 
+      // Update nama di tabel users jika dikirim
+      if (name && name.trim() && name.trim() !== student.name) {
+        await pool.execute(
+          'UPDATE users SET name = ?, updated_at = NOW() WHERE id = ?',
+          [name.trim(), student.user_id]
+        );
+      }
+
       const updated = await studentModel.update(id, {
-        class_id: class_id ? parseInt(class_id) : undefined,
-        nis
+        class_id: class_id ? parseInt(class_id) : student.class_id,
+        nis: nis || student.nis
       });
 
       if (!updated) {

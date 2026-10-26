@@ -1,4 +1,4 @@
-/* Modal */
+/* Modal — Clean Modern */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -8,8 +8,6 @@
   justify-content: center;
   padding: var(--spacing-lg);
   z-index: var(--z-modal);
-  /* Backdrop: fade 200ms (opacity-only, tanpa backdrop-filter
-     agar tetap ringan di perangkat kelas menengah). */
   animation: kf-fade-in var(--dur-base) var(--ease) both;
 }
 
@@ -19,16 +17,13 @@
 }
 
 .modal {
-  background: var(--glass-bg-thick);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-xl);
-  box-shadow: var(--glass-shadow-lg), var(--glass-highlight);
+  box-shadow: var(--shadow-xl);
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  /* Dialog: scale 0.96 -> 1 + fade-in, 280ms */
   animation: kf-modal-in 280ms var(--ease) both;
 }
 
@@ -84,21 +79,14 @@
   color: var(--text-tertiary);
   cursor: pointer;
   transition:
-    background-color var(--dur-base) var(--ease),
-    color var(--dur-base) var(--ease),
-    box-shadow var(--dur-base) var(--ease),
-    transform var(--dur-base) var(--ease);
+    background-color var(--transition-fast),
+    color var(--transition-fast);
   flex-shrink: 0;
 }
 
 .modal-close:hover {
   background: var(--bg-tertiary);
   color: var(--text-primary);
-}
-
-.modal-close:active {
-  transform: scale(0.96);
-  transition-duration: var(--dur-fast);
 }
 
 .modal-close:focus-visible {
@@ -128,9 +116,9 @@
 }
 
 .confirm-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -139,18 +127,18 @@
 }
 
 .confirm-icon.warning {
-  background: #fff8e1;
-  color: #f57c00;
+  background: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .confirm-icon.danger {
-  background: #fff0f1;
+  background: var(--color-error-light);
   color: var(--color-error);
 }
 
 .confirm-icon.info {
-  background: #e3f2fd;
-  color: #1976d2;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .confirm-title {
@@ -209,11 +197,11 @@
   .modal-overlay,
   .modal-overlay--exit,
   .modal,
-  .modal--exit,
-  .modal-close,
-  .modal-close:active {
+  .modal--exit {
     animation: none;
+  }
+
+  .modal-close {
     transition: none;
-    transform: none;
   }
 }

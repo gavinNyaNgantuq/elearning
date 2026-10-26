@@ -2,10 +2,8 @@
 @import './animations.css';
 
 /* ============================================================
-   LIQUID GLASS — BASE LAYER
-   ------------------------------------------------------------
-   Reset, kanvas, tipografi dasar, dan utilitas global.
-   Nilai visual diambil dari variables.css — tanpa literal.
+   CLEAN MODERN — BASE LAYER
+   Reset, kanvas solid, tipografi dasar, utilitas global.
    ============================================================ */
 
 * {
@@ -21,26 +19,14 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-/* ------------------------------------------------------------
-   KANVAS
-   --canvas-gradient bukan sekadar hiasan: ia adalah "isi" yang
-   diblur oleh backdrop-filter. Tanpa latar berwarna di belakang,
-   permukaan glass terbaca sebagai kotak putih buram biasa.
-   'background-attachment: fixed' menjaga blur tetap stabil
-   saat konten di-scroll.
-   ------------------------------------------------------------ */
 body {
   min-height: 100vh;
   font-family: var(--font-family);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-relaxed);
+  line-height: var(--line-height-normal);
   color: var(--text-primary);
   background-color: var(--bg-primary);
-  background-image: var(--canvas-gradient);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  transition: background-color var(--transition-base);
 }
 
 /* ------------------------------------------------------------
@@ -53,10 +39,10 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
-h1 { font-size: var(--font-size-3xl); letter-spacing: -0.026em; }
+h1 { font-size: var(--font-size-3xl); }
 h2 { font-size: var(--font-size-2xl); }
 h3 { font-size: var(--font-size-xl); }
-h4 { font-size: var(--font-size-lg); letter-spacing: var(--letter-spacing-snug); }
+h4 { font-size: var(--font-size-lg); }
 h5 { font-size: var(--font-size-md); }
 h6 {
   font-size: var(--font-size-xs);
@@ -85,7 +71,6 @@ code, pre, kbd, samp {
   font-size: 0.9em;
 }
 
-/* Seleksi teks mengikuti warna brand */
 ::selection {
   background: var(--color-primary-soft);
   color: var(--text-primary);
@@ -107,8 +92,7 @@ a:hover {
 }
 
 /* ------------------------------------------------------------
-   FORM DASAR — warisan ke elemen native agar konsisten
-   dengan komponen Input.
+   FORM DASAR
    ------------------------------------------------------------ */
 button, input, select, textarea {
   font-family: inherit;
@@ -138,7 +122,7 @@ hr {
 }
 
 /* ------------------------------------------------------------
-   SCROLLBAR — ramping, selaras estetika kaca
+   SCROLLBAR — ramping
    ------------------------------------------------------------ */
 * {
   scrollbar-width: thin;
@@ -186,34 +170,19 @@ hr {
   border-width: 0;
 }
 
-/* Utilitas material glass — dipakai komponen mana pun */
-.glass {
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border: var(--border-width-thin) solid var(--glass-border);
-  box-shadow: var(--glass-shadow), var(--glass-highlight);
-}
-
-.glass-thick {
-  background: var(--glass-bg-thick);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border: var(--border-width-thin) solid var(--glass-border);
-  box-shadow: var(--glass-shadow), var(--glass-highlight);
+/* Alias kompatibilitas — dipetakan ke permukaan solid */
+.glass,
+.glass-thick,
+.glass-panel {
+  background: var(--bg-secondary);
+  border: var(--border-width-thin) solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 }
 
 .glass-panel {
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-blur-lg);
-  backdrop-filter: var(--glass-blur-lg);
-  border: var(--border-width-thin) solid var(--glass-border);
-  box-shadow: var(--glass-shadow-lg), var(--glass-highlight);
   border-radius: var(--radius-xl);
 }
 
-/* Tombol Kembali di header halaman — duduk di atas judul,
-   memakai gaya Button eksisting (glass) tanpa style baru */
 .page-back {
   margin-bottom: var(--spacing-sm);
 }
@@ -225,7 +194,7 @@ hr {
 }
 
 /* ------------------------------------------------------------
-   ANIMASI
+   ANIMASI DASAR
    ------------------------------------------------------------ */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -235,7 +204,7 @@ hr {
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -246,7 +215,7 @@ hr {
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateX(-8px);
   }
   to {
     opacity: 1;
@@ -257,7 +226,7 @@ hr {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.98);
   }
   to {
     opacity: 1;
@@ -278,7 +247,7 @@ hr {
 }
 
 .animate-scale-in {
-  animation: scaleIn var(--transition-base) var(--ease-spring);
+  animation: scaleIn var(--transition-base) var(--ease-out);
 }
 
 /* ------------------------------------------------------------

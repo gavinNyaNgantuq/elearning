@@ -6,7 +6,7 @@ const submissionModel = {
    */
   async getAll({ assignment_id, student_id, page = 1, limit = 20 }) {
     let query = `
-      SELECT s.*, a.title as assignment_title, a.due_date,
+      SELECT s.*, a.title as assignment_title, a.deadline,
              sub.name as subject_name, c.name as class_name,
              u.name as student_name, st.nis
       FROM submissions s
@@ -66,7 +66,7 @@ const submissionModel = {
    */
   async getById(id) {
     const [rows] = await pool.execute(
-      `SELECT s.*, a.title as assignment_title, a.due_date, a.subject_id, a.class_id,
+      `SELECT s.*, a.title as assignment_title, a.deadline, a.subject_id, a.class_id,
               u.name as student_name, st.nis
        FROM submissions s
        LEFT JOIN assignments a ON s.assignment_id = a.id
@@ -82,24 +82,37 @@ const submissionModel = {
    * Create submission
    */
   async create(submissionData) {
-    const { assignment_id, student_id, file_path } = submissionData;
+    const { assignment_id, student_id, file, file_path } = submissionData;
     const [result] = await pool.execute(
-      `INSERT INTO submissions (assignment_id, student_id, file_path, submitted_at)
+      `INSERT INTO submissions (assignment_id, student_id, file, submitted_at)
        VALUES (?, ?, ?, NOW())`,
-      [assignment_id, student_id, file_path || null]
+      [assignment_id, student_id, file || file_path || null]
     );
     return { id: result.insertId, ...submissionData };
+  },
+
+  /**
+   * Cek apakah siswa sudah mengumpulkan tugas ini
+   */
+  async checkExisting(assignment_id, student_id) {
+    const [rows] = await pool.execute(
+      `SELECT id FROM submissions
+        WHERE assignment_id = ? AND student_id = ?
+        LIMIT 1`,
+      [assignment_id, student_id]
+    );
+    return rows[0] || null;
   },
 
   /**
    * Update submission (file re-upload)
    */
   async update(id, submissionData) {
-    const { file_path } = submissionData;
+    const { file, file_path } = submissionData;
     const [result] = await pool.execute(
-      `UPDATE submissions SET file_path = ?, submitted_at = NOW()
+      `UPDATE submissions SET file = ?, submitted_at = NOW()
        WHERE id = ?`,
-      [file_path, id]
+      [file || file_path, id]
     );
     return result.affectedRows > 0;
   },
@@ -109,7 +122,7 @@ const submissionModel = {
    */
   async grade(id, gradeValue) {
     const [result] = await pool.execute(
-      `UPDATE submissions SET grade = ?
+      `UPDATE submissions SET score = ?
        WHERE id = ?`,
       [gradeValue, id]
     );
@@ -148,7 +161,7 @@ const submissionModel = {
    */
   async getByStudent(studentId) {
     const [rows] = await pool.execute(
-      `SELECT s.*, a.title as assignment_title, a.due_date
+      `SELECT s.*, a.title as assignment_title, a.deadline
        FROM submissions s
        LEFT JOIN assignments a ON s.assignment_id = a.id
        WHERE s.student_id = ?

@@ -76,7 +76,7 @@ const bookModel = {
     const { category_id, title, author, file, created_by } = bookData;
     const [result] = await pool.execute(
       `INSERT INTO books (category_id, title, author, file, created_at, created_by)
-       VALUES (?, ?, ?, NOW(), ?)`,
+       VALUES (?, ?, ?, ?, NOW(), ?)`,
       [category_id || null, title, author || null, file || null, created_by || 1]
     );
     return { id: result.insertId, ...bookData };

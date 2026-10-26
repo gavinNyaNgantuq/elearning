@@ -21,7 +21,6 @@ interface MenuItem {
   label: string;
   description: string;
   icon: React.ReactNode;
-  accentColor: string;
   route?: string;
 }
 
@@ -38,7 +37,6 @@ const menuItems: MenuItem[] = [
         <line x1="3" y1="10" x2="21" y2="10" />
       </svg>
     ),
-    accentColor: 'blue',
     route: '/schedules',
   },
   {
@@ -53,7 +51,6 @@ const menuItems: MenuItem[] = [
         <line x1="8" y1="11" x2="16" y2="11" />
       </svg>
     ),
-    accentColor: 'cyan',
     route: '/materials',
   },
   {
@@ -66,7 +63,6 @@ const menuItems: MenuItem[] = [
         <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
       </svg>
     ),
-    accentColor: 'orange',
     route: '/assignments',
   },
   {
@@ -78,7 +74,6 @@ const menuItems: MenuItem[] = [
         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
       </svg>
     ),
-    accentColor: 'indigo',
     route: '/exam/enter-token',
   },
   {
@@ -92,7 +87,6 @@ const menuItems: MenuItem[] = [
         <line x1="6" y1="20" x2="6" y2="14" />
       </svg>
     ),
-    accentColor: 'green',
     route: '/nilai',
   },
   {
@@ -105,7 +99,6 @@ const menuItems: MenuItem[] = [
         <polyline points="22 4 12 14.01 9 11.01" />
       </svg>
     ),
-    accentColor: 'teal',
     route: '/absensi',
   },
   {
@@ -121,7 +114,6 @@ const menuItems: MenuItem[] = [
         <polyline points="10 9 9 9 8 9" />
       </svg>
     ),
-    accentColor: 'purple',
     route: '/catatan',
   },
   {
@@ -135,7 +127,6 @@ const menuItems: MenuItem[] = [
         <line x1="10" y1="12" x2="14" y2="12" />
       </svg>
     ),
-    accentColor: 'slate',
     route: '/arsip',
   },
   {
@@ -150,7 +141,6 @@ const menuItems: MenuItem[] = [
         <line x1="8" y1="11" x2="16" y2="11" />
       </svg>
     ),
-    accentColor: 'pink',
     route: '/eperpus',
   },
 ];
@@ -194,20 +184,20 @@ const formatDayName = (day: string) => {
   return dayNames[day.toLowerCase()] || day;
 };
 
-const getInitials = (name?: string) =>
-  (name || '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word.charAt(0).toUpperCase())
-    .join('');
+const formatDeadline = (value?: string) => {
+  if (!value) return 'Tanpa tenggat';
+  return new Date(value).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+  });
+};
 
 const StudentPortal = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [schedules, setSchedules] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -216,31 +206,20 @@ const StudentPortal = () => {
 
   const fetchPortalData = async () => {
     try {
-      const [announcementsRes, schedulesRes] = await Promise.all([
+      const [announcementsRes, schedulesRes, assignmentsRes] = await Promise.all([
         api.get('/announcements/latest').catch(() => ({ data: { data: [] } })),
         api.get('/schedules/student').catch(() => ({ data: { data: [] } })),
+        api.get('/assignments/student').catch(() => ({ data: { data: [] } })),
       ]);
       setAnnouncements(announcementsRes.data.data);
       setSchedules(schedulesRes.data.data);
+      setAssignments(assignmentsRes.data.data);
     } catch (error) {
       console.error('Error fetching portal data:', error);
     } finally {
       setLoading(false);
     }
   };
-
-const getProfileInfo = () => {
-  if (!user) return null;
-  const classInfo = user.class_name || '';
-  const nis = user.nis || '';
-  if (!nis && !classInfo) return null;
-  return (
-    <div className="profile-info">
-      {nis && <p className="profile-nis">NIS: {nis}</p>}
-      {classInfo && <p className="profile-class">{classInfo}</p>}
-    </div>
-  );
-};
 
   const todaySchedules = getTodaySchedules(schedules);
   const todayName = formatDayName(new Date().toLocaleDateString('id-ID', { weekday: 'long' }));
@@ -262,102 +241,87 @@ const getProfileInfo = () => {
 
   return (
     <div className="student-dashboard">
-      {/* Welcome / Profile Hero */}
-      <section className="hero-section">
-        <div className="hero-card">
-          <div className="hero-content">
-            <div className="hero-greeting">
-              <p className="greeting-label">Selamat datang,</p>
-              <h1 className="greeting-name">{user?.name || 'Siswa'}</h1>
+      <header className="student-header">
+        <div className="student-identity">
+          <p className="dashboard-kicker">Selamat datang</p>
+          <h1 className="student-name">{user?.name || 'Siswa'}</h1>
+          <div className="student-meta">
+            {user?.nis && <span>NIS {user.nis}</span>}
+            {user?.class_name && <span>{user.class_name}</span>}
+          </div>
+        </div>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => navigate('/profile')}
+          className="student-profile-button"
+        >
+          Profil
+        </Button>
+      </header>
+
+      <div className="student-main">
+        <section className="task-panel" aria-labelledby="student-task-title">
+          <div className="panel-head">
+            <div>
+              <h2 id="student-task-title" className="dashboard-section-title">Tugas Terdekat</h2>
+              <p className="dashboard-section-desc">
+                {assignments.length > 0 ? `${assignments.length} tugas tersedia` : 'Daftar tugas kelas'}
+              </p>
             </div>
-            <div className="hero-meta">
-              {getProfileInfo()}
             <Button
-              variant="secondary"
-              onClick={() => navigate('/profile')}
-              className="hero-profile-button"
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/assignments')}
             >
-              Lihat Profil Lengkap
+              Semua tugas
             </Button>
-            </div>
           </div>
-          <div className="hero-avatar" aria-hidden="true">
-            {getInitials(user?.name)}
-          </div>
-        </div>
-      </section>
 
-      {/* Menu Utama */}
-      <section className="menu-section">
-        <h2 className="section-title">Menu Utama</h2>
-        <div className="menu-grid reveal-grid">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              className={`module-card module-card--${item.accentColor}`}
-              onClick={() => handleMenuClick(item)}
-            >
-              <div className="module-icon">
-                {item.icon}
-              </div>
-              <div className="module-content">
-                <h3 className="module-title">{item.label}</h3>
-                <p className="module-description">{item.description}</p>
-              </div>
-              <div className="module-arrow" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Content Grid: Pengumuman + Jadwal Hari Ini */}
-      <div className="content-grid">
-        {/* Pengumuman */}
-        <section className="info-section">
-          <div className="section-header">
-            <h2 className="section-title">Pengumuman</h2>
-          </div>
-          <div className="section-content">
-            {announcements.length > 0 ? (
-              <div className="announcement-list">
-                {announcements.slice(0, 3).map((announcement, index) => (
-                  <div key={index} className="announcement-item">
-                    <div className="announcement-header">
-                      <h3 className="announcement-title">{announcement.title}</h3>
-                    </div>
-                    <p className="announcement-content">{announcement.content}</p>
-                    {announcement.created_at && (
-                      <time className="announcement-date" dateTime={announcement.created_at}>
-                        {new Date(announcement.created_at).toLocaleDateString('id-ID', {
-                          weekday: 'long',
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                        })}
-                      </time>
+          {assignments.length > 0 ? (
+            <ul className="task-list">
+              {assignments.slice(0, 3).map((assignment) => (
+                <li key={assignment.id} className="task-item">
+                  <div className="task-main">
+                    <span className="task-kicker">
+                      {assignment.subject_name || 'Mata pelajaran'}
+                      {assignment.class_name ? ` · ${assignment.class_name}` : ''}
+                    </span>
+                    <h3 className="task-title">{assignment.title}</h3>
+                    {assignment.description && (
+                      <p className="task-description">{assignment.description}</p>
                     )}
                   </div>
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                description="Belum ada pengumuman yang tersedia."
-              />
-            )}
-          </div>
+                  <div className="task-side">
+                    <span className="task-deadline">{formatDeadline(assignment.deadline)}</span>
+                    <button
+                      type="button"
+                      className="task-action"
+                      onClick={() => navigate('/assignments')}
+                    >
+                      Buka
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <EmptyState description="Belum ada tugas untuk kelasmu saat ini." />
+          )}
         </section>
 
-        {/* Jadwal Hari Ini */}
-        <section className="schedule-section">
-          <div className="section-header">
-            <h2 className="section-title">Jadwal Hari Ini</h2>
-            <p className="schedule-day">{todayName}</p>
-          </div>
-          <div className="section-content">
+        <aside className="student-agenda" aria-label="Jadwal dan pengumuman">
+          <section className="agenda-block">
+            <div className="side-block-head">
+              <div>
+                <h2 className="dashboard-section-title">Jadwal Hari Ini</h2>
+                <p className="dashboard-section-desc">{todayName}</p>
+              </div>
+              <button type="button" className="text-action" onClick={() => navigate('/schedules')}>
+                Semua
+              </button>
+            </div>
+
             {todaySchedules.length > 0 ? (
               <div className="schedule-list">
                 {todaySchedules.map((schedule, index) => (
@@ -370,27 +334,87 @@ const getProfileInfo = () => {
                         {schedule.subject_name || 'Mata Pelajaran'}
                       </h3>
                       <p className="schedule-teacher">
-                        {schedule.teacher_nip ? `Guru: ${schedule.teacher_nip}` : ''}
-                        {schedule.room && ` • Ruang: ${schedule.room}`}
+                        {schedule.room ? `Ruang ${schedule.room}` : 'Ruang belum ditentukan'}
                       </p>
                     </div>
-                    <div className="schedule-status">
-                      <span className={`status-badge status-${schedule.status || 'upcoming'}`}>
-                        {schedule.status === 'ongoing' ? 'Sedang Berlangsung' :
-                         schedule.status === 'completed' ? 'Selesai' : 'Akan Datang'}
-                      </span>
-                    </div>
+                    <span className={`schedule-pill schedule-pill--${schedule.status || 'upcoming'}`}>
+                      {schedule.status === 'ongoing' ? 'Berlangsung' :
+                       schedule.status === 'completed' ? 'Selesai' : 'Akan Datang'}
+                    </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <EmptyState
-                description="Belum ada jadwal untuk hari ini."
-              />
+              <EmptyState description="Belum ada jadwal untuk hari ini." />
             )}
-          </div>
-        </section>
+          </section>
+
+          <section className="agenda-block">
+            <div className="side-block-head">
+              <div>
+                <h2 className="dashboard-section-title">Pengumuman</h2>
+                <p className="dashboard-section-desc">Informasi terbaru sekolah</p>
+              </div>
+              <button type="button" className="text-action" onClick={() => navigate('/announcements')}>
+                Semua
+              </button>
+            </div>
+
+            {announcements.length > 0 ? (
+              <div className="announcement-list">
+                {announcements.slice(0, 2).map((announcement, index) => (
+                  <article key={index} className="announcement-item">
+                    <h3 className="announcement-title">{announcement.title}</h3>
+                    <p className="announcement-content">{announcement.content}</p>
+                    {announcement.created_at && (
+                      <time className="announcement-date" dateTime={announcement.created_at}>
+                        {new Date(announcement.created_at).toLocaleDateString('id-ID', {
+                          day: 'numeric',
+                          month: 'short',
+                        })}
+                      </time>
+                    )}
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <EmptyState description="Belum ada pengumuman." />
+            )}
+          </section>
+        </aside>
       </div>
+
+      <section className="menu-section" aria-labelledby="student-menu-title">
+        <div className="menu-head">
+          <div>
+            <h2 id="student-menu-title" className="dashboard-section-title">Menu Siswa</h2>
+            <p className="dashboard-section-desc">Akses pembelajaran dan layanan sekolah.</p>
+          </div>
+        </div>
+        <div className="menu-grid reveal-grid">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className="module-card"
+              onClick={() => handleMenuClick(item)}
+            >
+              <span className="module-icon" aria-hidden="true">
+                {item.icon}
+              </span>
+              <span className="module-content">
+                <span className="module-title">{item.label}</span>
+                <span className="module-description">{item.description}</span>
+              </span>
+              <span className="module-arrow" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

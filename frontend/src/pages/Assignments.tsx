@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import Card from '../components/Card';
 import BackButton from '../components/BackButton';
 import './Assignments.css';
 
 export default function Assignments() {
+  const { user } = useAuth();
   const [assignments, setAssignments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -14,11 +16,9 @@ export default function Assignments() {
 
   const fetchAssignments = async () => {
     try {
-      // We don't have a teacher endpoint in the current API, so we'll use the student one
-      // or just show empty state since there's no teacher assignment endpoint
-      // The assignment routes only have /student and /teacher endpoints
-      // Let's try to use a generic approach
-      const response = await api.get('/assignments/teacher').catch(() => ({ data: { data: [] } }));
+      // Siswa pakai endpoint perannya; guru/admin pakai endpoint guru.
+      const endpoint = user?.role === 'siswa' ? '/assignments/student' : '/assignments/teacher';
+      const response = await api.get(endpoint).catch(() => ({ data: { data: [] } }));
       setAssignments(response.data.data);
     } catch (err) {
       console.error('Error fetching assignments:', err);
@@ -95,7 +95,7 @@ export default function Assignments() {
                   </td>
                     <td>{a.subject_name || '-'}</td>
                     <td>{a.class_name || '-'}</td>
-                    <td>{a.due_date ? new Date(a.due_date).toLocaleDateString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '-'}</td>
+                    <td>{(a.deadline || a.due_date) ? new Date(a.deadline || a.due_date).toLocaleDateString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '-'}</td>
                     <td>{a.created_at ? new Date(a.created_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : '-'}</td>
                   </tr>
                 ))}

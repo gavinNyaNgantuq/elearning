@@ -1,9 +1,8 @@
 /* ============================================================
-   INPUT — Liquid Glass
-   ------------------------------------------------------------
-   Kelas (.input-wrapper, .input-label, .input, .input-error,
-   .input-with-icon, .input-icon, .input-error-message)
-   TIDAK berubah — semua pemakaian di TSX aman.
+   INPUT — Clean Modern
+   Kelas (.input-wrapper, .input-label, .input-container, .input,
+   .input-error, .input-with-icon, .input-icon,
+   .input-error-message) TIDAK berubah.
    ============================================================ */
 
 .input-wrapper {
@@ -15,7 +14,6 @@
 .input-label {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  letter-spacing: var(--letter-spacing-snug);
   color: var(--text-primary);
 }
 
@@ -27,17 +25,16 @@
 
 .input {
   width: 100%;
-  padding: 11px 14px;
+  min-height: 42px;
+  padding: 10px 14px;
   font-size: var(--font-size-sm);
   font-family: var(--font-family);
   line-height: var(--line-height-snug);
   color: var(--text-primary);
-  background: var(--glass-bg-thick);
-  -webkit-backdrop-filter: var(--glass-blur-sm);
-  backdrop-filter: var(--glass-blur-sm);
-  border: var(--border-width-thin) solid var(--glass-border);
+  background: var(--bg-secondary);
+  border: var(--border-width-thin) solid var(--border-medium);
   border-radius: var(--radius-md);
-  box-shadow: var(--glass-highlight), var(--shadow-xs);
+  box-shadow: var(--shadow-xs);
   outline: none;
   transition:
     background-color var(--transition-fast),
@@ -49,31 +46,26 @@
   color: var(--text-tertiary);
 }
 
-/* Nada "mati" untuk field terisi-read-only */
 .input:read-only {
-  background: var(--glass-bg-thin);
+  background: var(--bg-tertiary);
   color: var(--text-secondary);
   cursor: default;
 }
 
 .input:hover:not(:disabled):not(:read-only) {
-  border-color: var(--glass-border-hover);
-  background: var(--glass-surface-hover);
+  border-color: var(--border-strong);
 }
 
-/* Focus — lingkaran brand + kilau, tanpa outline bawaan */
 .input:focus {
   border-color: var(--color-primary);
-  background: var(--glass-bg-solid);
-  box-shadow:
-    var(--glass-highlight),
-    var(--shadow-focus);
+  box-shadow: var(--shadow-focus);
 }
 
 .input:disabled {
-  opacity: 0.55;
+  opacity: 0.6;
   cursor: not-allowed;
   background: var(--bg-tertiary);
+  color: var(--text-disabled);
 }
 
 /* ------------------------------------------------------------
@@ -81,7 +73,6 @@
    ------------------------------------------------------------ */
 .input-error {
   border-color: var(--color-error);
-  /* Shake ringan SATU kali saat error pertama muncul (maks 4px) */
   animation: kf-shake-once var(--dur-base) var(--ease);
 }
 
@@ -91,9 +82,7 @@
 
 .input-error:focus {
   border-color: var(--color-error);
-  box-shadow:
-    var(--glass-highlight),
-    var(--shadow-focus-error);
+  box-shadow: var(--shadow-focus-error);
 }
 
 .input-error-message {
@@ -101,7 +90,6 @@
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-snug);
   color: var(--color-error);
-  /* Pesan error muncul dengan fade-in singkat */
   animation: kf-fade-in var(--dur-fast) var(--ease) both;
 }
 
@@ -122,7 +110,6 @@
   transition: color var(--transition-fast);
 }
 
-/* Sorot ikon saat field difokuskan */
 .input-container:focus-within .input-icon {
   color: var(--color-primary);
 }

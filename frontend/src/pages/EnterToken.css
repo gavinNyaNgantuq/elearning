@@ -1,91 +1,82 @@
+/* EnterToken — Clean Modern */
 .token-page {
+  min-height: 60vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
+  padding: var(--spacing-lg);
 }
 
 .token-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
   padding: var(--spacing-2xl);
-  text-align: center;
+  animation: kf-rise var(--dur-base) var(--ease) both;
 }
 
 .token-header {
-  margin-bottom: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
 }
 
 .token-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-lg);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
   background: var(--color-primary-light);
   color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto var(--spacing-lg);
 }
 
 .token-title {
   font-size: var(--font-size-xl);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
+  margin: 0;
 }
 
 .token-subtitle {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
+  margin: 0;
 }
 
 .token-form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 .token-input-wrapper {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xs);
 }
 
+.token-input input,
 .token-input {
-  width: 100%;
-  padding: var(--spacing-lg);
-  font-size: var(--font-size-2xl);
-  font-family: 'Monaco', 'Consolas', monospace;
-  font-weight: 700;
   text-align: center;
-  letter-spacing: 8px;
+  letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: var(--text-primary);
-  background: var(--color-gray-50);
-  border: 2px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  outline: none;
-  transition: all var(--transition-fast);
-}
-
-.token-input::placeholder {
-  color: var(--text-tertiary);
-  letter-spacing: 4px;
-}
-
-.token-input:focus {
-  border-color: var(--color-primary);
-  background: var(--bg-secondary);
-  box-shadow: 0 0 0 4px var(--color-primary-light);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
 }
 
 .token-error {
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-error-light);
-  border: 1px solid var(--color-error);
+  border: 1px solid #fecaca;
   border-radius: var(--radius-md);
-}
-
-.token-error p {
   color: var(--color-error);
   font-size: var(--font-size-sm);
   text-align: center;
@@ -93,15 +84,4 @@
 
 .token-button {
   width: 100%;
-}
-
-@media (max-width: 480px) {
-  .token-card {
-    padding: var(--spacing-xl);
-  }
-
-  .token-input {
-    font-size: var(--font-size-xl);
-    letter-spacing: 6px;
-  }
 }

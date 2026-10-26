@@ -2,6 +2,7 @@ const assignmentModel = require('../models/assignmentModel');
 const classModel = require('../models/classModel');
 const subjectModel = require('../models/subjectModel');
 const teacherModel = require('../models/teacherModel');
+const pool = require('../config/database');
 
 const assignmentController = {
   /**
@@ -327,12 +328,21 @@ const assignmentController = {
    */
   async getByStudent(req, res) {
     try {
-      const { student_id } = req.params;
+      // Rute /student tanpa param: pakai student_id dari JWT; dukung param bila ada.
+      const student_id = req.params.student_id
+        ? parseInt(req.params.student_id)
+        : req.user.student_id;
+      if (!student_id) {
+        return res.status(400).json({
+          success: false,
+          message: 'Data siswa tidak ditemukan'
+        });
+      }
       // This would need a method in assignmentModel to get assignments with submission status
       // For now, return assignments for student's class
       const student = await pool.execute(
         'SELECT class_id FROM students WHERE id = ? AND deleted_at IS NULL',
-        [req.params.student_id]
+        [student_id]
       );
       
       if (student[0].length === 0) {

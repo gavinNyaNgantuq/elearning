@@ -2,16 +2,57 @@ const pool = require('../config/database');
 
 const classModel = {
   /**
-   * Get semua classes
+   * Get semua classes dengan pagination dan filter
    */
-  async getAll() {
-    const [rows] = await pool.execute(
-      `SELECT c.id, c.name, c.major_id, m.name as major_name
+  async getAll({ major_id, search, page = 1, limit = 20 } = {}) {
+    let query = `
+      SELECT c.id, c.name, c.major_id, c.academic_year, m.name as major_name
        FROM classes c
        LEFT JOIN majors m ON c.major_id = m.id
-       ORDER BY c.name ASC`
-    );
+       WHERE c.deleted_at IS NULL
+    `;
+    const params = [];
+
+    if (major_id) {
+      query += ` AND c.major_id = ?`;
+      params.push(major_id);
+    }
+
+    if (search) {
+      query += ` AND c.name LIKE ?`;
+      params.push(`%${search}%`);
+    }
+
+    query += ` ORDER BY c.name ASC LIMIT ? OFFSET ?`;
+    params.push(limit, (page - 1) * limit);
+
+    const [rows] = await pool.execute(query, params);
     return rows;
+  },
+
+  /**
+   * Get total count dengan filter yang sama
+   */
+  async getCount({ major_id, search } = {}) {
+    let query = `
+      SELECT COUNT(*) as total
+       FROM classes c
+       WHERE c.deleted_at IS NULL
+    `;
+    const params = [];
+
+    if (major_id) {
+      query += ` AND c.major_id = ?`;
+      params.push(major_id);
+    }
+
+    if (search) {
+      query += ` AND c.name LIKE ?`;
+      params.push(`%${search}%`);
+    }
+
+    const [rows] = await pool.execute(query, params);
+    return rows[0].total;
   },
 
   /**

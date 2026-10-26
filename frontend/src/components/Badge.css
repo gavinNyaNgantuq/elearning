@@ -1,19 +1,41 @@
-/* Badge — label ringan, selebar isi teks */
+/* Badge — label status ringan, selebar isi teks */
 .badge {
   display: inline-flex;
   align-items: center;
   width: fit-content;
   align-self: flex-start;
-  padding: var(--spacing-xs) var(--spacing-sm-md);
+  padding: 3px 10px;
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  line-height: 1;
+  line-height: 1.5;
   white-space: nowrap;
-  border: none;
+  border: 1px solid transparent;
 }
 
 .badge-blue {
   color: var(--color-badge-blue);
   background: var(--color-badge-blue-bg);
+  border-color: transparent;
+}
+
+.badge-green {
+  color: var(--green-700);
+  background: var(--color-success-light);
+}
+
+.badge-amber {
+  color: var(--amber-700);
+  background: var(--color-warning-light);
+}
+
+.badge-red {
+  color: var(--red-600);
+  background: var(--color-error-light);
+}
+
+.badge-gray {
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  border-color: var(--border-light);
 }

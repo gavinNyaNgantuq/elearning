@@ -1,112 +1,77 @@
 /* ============================================================
-   LIQUID GLASS — DESIGN TOKENS
+   CLEAN MODERN — DESIGN TOKENS
    ------------------------------------------------------------
-   Sistem desain terinspirasi Liquid Glass (iPhone/iPadOS).
-   Semua nilai visual aplikasi HARUS mengambil dari file ini.
-   Dilarang menulis hex/px/rgba literal di file CSS lain.
+   Platform pendidikan yang bersih dan profesional.
+   Background solid, border tipis, shadow ringan.
+   Tanpa glassmorphism, tanpa blur, tanpa gradient dekoratif.
 
-   Urutan:
-     1. Palet primitif (raw scale)
-     2. Warna semantik
-     3. Tipografi
-     4. Spacing
-     5. Radius
-     6. Material glass
-     7. Shadow
-     8. Border
-     9. Motion / easing
-    10. Z-index
-    11. Layar / breakpoint (referensi)
-
-   CATATAN KOMPATIBILITAS:
-     Semua token yang sudah dipakai di codebase lama tetap
-     dipertahankan NAMA-NYA (--color-primary, --radius-md,
-     --shadow-xl, dst) sehingga tidak ada CSS yang patah.
+   Nama token lama dipertahankan agar CSS yang sudah ada
+   tidak patah (--color-primary, --radius-md, --shadow-*,
+   --spacing-*, --font-size-*, dst).
    ============================================================ */
 
 :root {
   /* ============================================================
-     1. PALET PRIMITIF
-     Skala mentah. Jangan dipakai langsung di komponen —
-     pakai token semantik di bagian 2 agar bisa diganti
-     satu titik (mis. mode gelap) tanpa menyentuh komponen.
+     1. PALET (sesuai spesifikasi)
      ============================================================ */
+  --brand-blue-50: #eff6ff;
+  --brand-blue-100: #dbeafe;
+  --brand-blue-200: #bfdbfe;
+  --brand-blue-300: #93c5fd;
+  --brand-blue-400: #60a5fa;
+  --brand-blue-500: #2563eb; /* primary */
+  --brand-blue-600: #2563eb;
+  --brand-blue-700: #1d4ed8; /* hover */
+  --brand-blue-800: #1e40af;
+  --brand-blue-900: #1e3a8a;
 
-  /* Brand — biru sistem iOS */
-  --brand-blue-50: #e9f2ff;
-  --brand-blue-100: #d3e5ff;
-  --brand-blue-200: #a8c9ff;
-  --brand-blue-300: #7ab0ff;
-  --brand-blue-400: #4091ff;
-  --brand-blue-500: #0a84ff;
-  --brand-blue-600: #007aff; /* primary */
-  --brand-blue-700: #0071e3; /* hover */
-  --brand-blue-800: #0060cc;
-  --brand-blue-900: #004bad;
-
-  /* Netral — abu-abu dingin (netral, bukan milik brand) */
   --neutral-0: #ffffff;
-  --neutral-50: #f7f8fa;
-  --neutral-100: #eef0f4;
-  --neutral-200: #e2e5ea;
-  --neutral-300: #cfd4dc;
-  --neutral-400: #a7aeba;
-  --neutral-500: #7d8593;
-  --neutral-600: #5d6470;
-  --neutral-700: #434955;
-  --neutral-800: #2b303a;
-  --neutral-900: #15181f;
-  --neutral-950: #0b0d12;
+  --neutral-50: #f8fafc; /* main background */
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0; /* border */
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b; /* secondary text */
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1e293b;
+  --neutral-900: #0f172a; /* heading */
+  --neutral-950: #020617;
 
-  /* Status */
-  --green-400: #34c759; /* hijau sistem iOS */
-  --green-600: #1f9d55;
-  --green-700: #17804a;
-  --amber-400: #ffcc00;
-  --amber-500: #ff9500; /* oranye sistem iOS */
-  --amber-600: #e08200;
-  --amber-700: #b86a00;
-  --red-400: #ff3b30; /* merah sistem iOS */
-  --red-500: #e8253a;
-  --red-600: #d70015;
-  --red-700: #b00010;
+  --green-400: #22c55e;
+  --green-600: #16a34a; /* success */
+  --green-700: #15803d;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706; /* warning */
+  --amber-700: #b45309;
+  --red-400: #f87171;
+  --red-500: #dc2626; /* error */
+  --red-600: #b91c1c;
+  --red-700: #991b1b;
 
   /* ============================================================
      2. WARNA SEMANTIK
-     Yang dipakai komponen. Ubah di sini saja.
      ============================================================ */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-active: #1e40af;
+  --color-primary-light: #eff6ff;
+  --color-primary-soft: #dbeafe;
 
-  /* Brand / aksi utama */
-  --color-primary: var(--brand-blue-600);
-  --color-primary-hover: var(--brand-blue-700);
-  --color-primary-active: var(--brand-blue-800);
-  --color-primary-light: var(--brand-blue-50);
-  --color-primary-soft: rgba(0, 122, 255, 0.12);
-
-  /* Badge — biru netral untuk label ringan (mis. "E-Learning",
-     avatar fallback). Sengaja beda dari --color-primary agar
-     badge tidak bersaing dengan aksi utama. */
-  --color-badge-blue: #2563eb;
-  --color-badge-blue-bg: rgba(37, 99, 235, 0.12);
+  --color-badge-blue: #1d4ed8;
+  --color-badge-blue-bg: #dbeafe;
   --color-secondary: var(--neutral-500);
 
-  /* Status.
-     CATATAN: --color-success & --color-error dipakai ganda
-     (background tombol/panel DAN teks kecil). Karena itu
-     dipilih nilai yang kontrasnya terbaca di atas putih
-     maupun dipakai sebagai dasar teks putih. */
-  --color-success: var(--green-600);
-  --color-success-light: #e8f7ef;
-  --color-warning: var(--amber-600);
-  --color-warning-light: #fff5e6;
-  --color-error: var(--red-500);
-  --color-error-strong: var(--red-600);
-  --color-error-light: #fff0f1;
+  --color-success: #16a34a;
+  --color-success-light: #dcfce7;
+  --color-warning: #d97706;
+  --color-warning-light: #fef3c7;
+  --color-error: #dc2626;
+  --color-error-strong: #b91c1c;
+  --color-error-light: #fee2e2;
 
-  /* Netral siap pakai (alias) */
-  --color-white: var(--neutral-0);
-  /* Teks di atas permukaan berwarna (tombol primary,
-     avatar, ikon aksen). Selalu putih di kedua tema. */
+  --color-white: #ffffff;
   --text-inverse: #ffffff;
   --color-gray-50: var(--neutral-50);
   --color-gray-100: var(--neutral-100);
@@ -119,62 +84,37 @@
   --color-gray-800: var(--neutral-800);
   --color-gray-900: var(--neutral-900);
 
-  /* Permukaan (surface).
-     --bg-primary sengaja TRANSLUCENT, bukan solid.
-     Alasannya struktural: satu-satunya pemakaiannya adalah
-     body dan .portal (keduanya latar halaman penuh). Bila
-     ia solid, ia menutup --canvas-gradient dan seluruh
-     token material glass kehilangan "isi" untuk diblur —
-     backdrop-filter lalu hanya mengaburkan warna datar dan
-     hasilnya bukan kaca, melainkan kotak putih buram.
-     Dengan translucen, canvas-gradient tembus dan glass
-     benar-benar terbaca. Tidak ada pemakaian yang
-     membutuhkan opasitas (dicek: hanya 2 titik, keduanya
-     latar halaman). */
-  --bg-primary: rgba(244, 246, 250, 0.72);
+  /* Permukaan — solid */
+  --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
-  --bg-tertiary: var(--neutral-100);
-  --bg-glass: rgba(255, 255, 255, 0.72);
+  --bg-tertiary: #f1f5f9;
+  --bg-glass: #ffffff;
   --bg-inverse: var(--neutral-900);
-  --bg-scrim: rgba(11, 13, 18, 0.45);
+  --bg-scrim: rgba(15, 23, 42, 0.5);
 
-  /* Latar dekoratif di balik permukaan (aurora / cahaya) */
-  --canvas-gradient:
-    radial-gradient(1200px 800px at 12% -8%, rgba(0, 122, 255, 0.16), transparent 60%),
-    radial-gradient(900px 700px at 92% 4%, rgba(10, 132, 255, 0.12), transparent 58%),
-    radial-gradient(1000px 900px at 78% 100%, rgba(52, 199, 89, 0.10), transparent 62%),
-    radial-gradient(800px 700px at 8% 96%, rgba(255, 149, 0, 0.10), transparent 60%),
-    linear-gradient(180deg, #f7f9fc 0%, #eef1f7 100%);
+  /* Latar kanvas — solid, tanpa gradient */
+  --canvas-gradient: none;
 
   /* Teks */
-  --text-primary: var(--neutral-900);
-  --text-secondary: var(--neutral-600);
-  --text-tertiary: var(--neutral-500);
-  --text-disabled: var(--neutral-400);
-  --text-link: var(--brand-blue-600);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --text-disabled: #94a3b8;
+  --text-link: #2563eb;
 
-  /* Alias kompatibilitas (lihat catatan di bagian spacing) */
   --text-muted: var(--text-tertiary);
   --font-size-base: var(--font-size-md);
 
   /* ============================================================
      3. TIPOGRAFI
      ============================================================ */
-
-  /* Font sistem — TIDAK menambah dependency/unduhan font.
-     Di iOS/macOS ter-render sebagai SF Pro; di platform lain
-     jatuh ke font sistem masing-masing. 'Inter' sengaja
-     DIHAPUS dari stack lama karena tidak pernah dimuat
-     (tidak ada @font-face maupun link eksternal), sehingga
-     selama ini ia hanya menambah satu fallback mati. */
   --font-family:
-    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
   --font-mono:
-    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    ui-monospace, SFMono-Regular, Menlo, Consolas,
     'Liberation Mono', monospace;
 
-  /* Ukuran — skala lama dipertahankan agar layout tidak bergeser */
   --font-size-2xs: 11px;
   --font-size-xs: 12px;
   --font-size-sm: 14px;
@@ -185,39 +125,29 @@
   --font-size-3xl: 30px;
   --font-size-4xl: 36px;
 
-  /* Bobot */
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Line height */
-  --line-height-tight: 1.2;
-  --line-height-snug: 1.35;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.4;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.65;
 
-  /* Letter spacing — ciri khas UI Apple: judul rapat (negatif) */
-  --letter-spacing-tight: -0.022em;
-  --letter-spacing-snug: -0.01em;
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-snug: -0.005em;
   --letter-spacing-normal: 0em;
   --letter-spacing-wide: 0.02em;
   --letter-spacing-caps: 0.06em;
 
   /* ============================================================
-     4. SPACING
-     Basis 4px. Enam token lama dipertahankan apa adanya.
+     4. SPACING (basis 4px)
      ============================================================ */
   --spacing-3xs: 2px;
   --spacing-2xs: 4px;
   --spacing-xs: 4px;
-
-  /* Alias kompatibilitas — token lama yang masih dipakai file CSS
-     sebelumnya. Nilai merujuk ke token kanonik, bukan literal. */
   --spacing-xxs: var(--spacing-xs);
-
-  /* Setengah langkah (6px) — jarak antar elemen teks di
-     school brand (nama ↔ badge ↔ meta) */
   --spacing-half: 6px;
   --spacing-sm: 8px;
   --spacing-sm-md: 12px;
@@ -229,214 +159,123 @@
   --spacing-4xl: 96px;
 
   /* ============================================================
-     5. RADIUS
-     Sudut lebih membulat khas perangkat Apple.
-     Hanya NILAI yang diubah, nama token tetap sama.
+     5. RADIUS — konsisten dan proporsional
      ============================================================ */
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 10px;
+  --radius-2xl: 10px;
   --radius-full: 9999px;
 
   /* ============================================================
-     6. MATERIAL GLASS
-     ------------------------------------------------------------
-     backdrop-filter membutuhkan isi di belakang elemen.
-     Karena itu --canvas-gradient (bagian 2) wajib aktif sebagai
-     latar, baru glass ini terbaca.
-
-     Pakai:
-       background: var(--glass-bg);
-       backdrop-filter: var(--glass-blur);
-       -webkit-backdrop-filter: var(--glass-blur);
-       border: 1px solid var(--glass-border);
-       box-shadow: var(--glass-shadow);
+     6. MATERIAL (alias solid — dipertahankan agar tidak ada
+     CSS lama yang patah; semuanya solid, tanpa blur)
      ============================================================ */
+  --glass-bg-thin: #ffffff;
+  --glass-bg: #ffffff;
+  --glass-bg-thick: #ffffff;
+  --glass-bg-solid: #ffffff;
+  --glass-bg-dark: #1e293b;
+  --glass-bg-dark-thick: #1e293b;
 
-  /* Opasitas bertingkat: tipis (transparan) -> tebal (padat) */
-  --glass-bg-thin: rgba(255, 255, 255, 0.45);
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-bg-thick: rgba(255, 255, 255, 0.88);
-  --glass-bg-solid: rgba(255, 255, 255, 0.94);
+  --glass-blur-sm: none;
+  --glass-blur: none;
+  --glass-blur-lg: none;
 
-  /* Versi gelap-redup untuk di atas gambar/gradient pekat */
-  --glass-bg-dark: rgba(22, 25, 32, 0.55);
-  --glass-bg-dark-thick: rgba(22, 25, 32, 0.78);
+  --glass-border: #e2e8f0;
+  --glass-border-subtle: #e2e8f0;
+  --glass-border-dark: #e2e8f0;
+  --glass-divider: #e2e8f0;
+  --glass-border-hover: #cbd5e1;
+  --glass-surface-hover: #f8fafc;
 
-  /* Blur — nilai penuh (bukan cuma px) supaya bisa dipakai
-     langsung pada dua properti via satu token. */
-  --glass-blur-sm: saturate(180%) blur(12px);
-  --glass-blur: saturate(180%) blur(20px);
-  --glass-blur-lg: saturate(200%) blur(40px);
+  --glass-highlight: none;
+  --glass-highlight-soft: none;
+  --glass-sheen: none;
 
-  /* Perabotan */
-  --glass-border: rgba(255, 255, 255, 0.7);
-  --glass-border-subtle: rgba(255, 255, 255, 0.4);
-  --glass-border-dark: rgba(255, 255, 255, 0.14);
-  --glass-divider: rgba(255, 255, 255, 0.55);
-
-  /* Sorotan spekular — "kilau" tipis di tepi atas kaca */
-  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
-  --glass-highlight-soft: inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
-
-  /* Gradien kilau (dipakai sebagai lapisan ::before) */
-  --glass-sheen: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 255, 255, 0.12) 42%,
-    rgba(255, 255, 255, 0) 70%
-  );
-
-  /* Shadow khas glass — ringan dan lebar */
-  --glass-shadow: 0 1px 1px rgba(11, 13, 18, 0.04),
-    0 10px 28px -12px rgba(11, 13, 18, 0.18);
-  --glass-shadow-lg: 0 2px 4px rgba(11, 13, 18, 0.05),
-    0 24px 56px -20px rgba(11, 13, 18, 0.24);
+  --glass-shadow: none;
+  --glass-shadow-lg: none;
 
   /* ============================================================
-     7. SHADOW
-     Bayangan berlapis (ringan + menyebar), gaya Apple.
+     7. SHADOW — hanya untuk overlay/dropdown
      ============================================================ */
-  --shadow-xs: 0 1px 2px rgba(11, 13, 18, 0.05);
-  --shadow-sm: 0 1px 2px rgba(11, 13, 18, 0.05), 0 2px 6px -2px rgba(11, 13, 18, 0.07);
-  --shadow-md: 0 2px 4px rgba(11, 13, 18, 0.04), 0 8px 20px -6px rgba(11, 13, 18, 0.1);
-  --shadow-lg: 0 4px 8px rgba(11, 13, 18, 0.04), 0 16px 32px -10px rgba(11, 13, 18, 0.14);
-  --shadow-xl: 0 8px 16px rgba(11, 13, 18, 0.05), 0 32px 64px -20px rgba(11, 13, 18, 0.18);
-  --shadow-2xl: 0 16px 32px rgba(11, 13, 18, 0.08), 0 48px 96px -32px rgba(11, 13, 18, 0.24);
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-xl: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --shadow-2xl: 0 12px 32px rgba(15, 23, 42, 0.12);
 
-  /* Lingkaran focus — konsisten untuk seluruh kontrol */
-  --shadow-focus: 0 0 0 4px rgba(0, 122, 255, 0.28);
-  --shadow-focus-error: 0 0 0 4px rgba(232, 37, 58, 0.26);
-  --shadow-inner: inset 0 1px 2px rgba(11, 13, 18, 0.06);
+  --shadow-focus: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  --shadow-focus-error: 0 0 0 3px rgba(220, 38, 38, 0.2);
+  --shadow-inner: none;
 
   /* ============================================================
      8. BORDER
      ============================================================ */
-  --border-width-hairline: 0.5px;
+  --border-width-hairline: 1px;
   --border-width-thin: 1px;
   --border-width-thick: 2px;
 
-  --border-light: rgba(11, 13, 18, 0.08);
-  --border-medium: rgba(11, 13, 18, 0.14);
-  --border-strong: rgba(11, 13, 18, 0.24);
-  --border-focus: var(--brand-blue-600);
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --border-strong: #94a3b8;
+  --border-focus: #2563eb;
   --border-error: var(--color-error);
 
-  /* ============================================================
-     8b. SUMBER WARNA (RGB triplet)
-     Dipakai saat alpha harus bervariasi antar state, mis.
-       rgba(var(--rgb-brand-600), 0.5)
-     Cara ini menjaga semua literal warna tetap berpusat di
-     file ini, bukan tersebar di komponen.
-     ============================================================ */
-  --rgb-ink: 11, 13, 18;        /* netral gelap dasar */
+  --rgb-ink: 15, 23, 42;
   --rgb-white: 255, 255, 255;
-  --rgb-brand-600: 0, 122, 255;
-  --rgb-brand-800: 0, 97, 211;
-  --rgb-red: 232, 37, 58;
-  --rgb-red-deep: 176, 0, 16;
+  --rgb-brand-600: 37, 99, 235;
+  --rgb-brand-800: 30, 64, 175;
+  --rgb-red: 220, 38, 38;
+  --rgb-red-deep: 153, 27, 27;
 
-  /* Kilau permukaan (sheen) — dipakai Card & lapisan kaca */
-  --glass-border-hover: rgba(255, 255, 255, 0.92);
-  --glass-surface-hover: rgba(255, 255, 255, 0.95);
+  /* Tombol — flat, tanpa kilau */
+  --btn-sheen: none;
+  --btn-sheen-danger: none;
+  --btn-edge: transparent;
+  --btn-edge-hover: transparent;
+  --btn-edge-danger: transparent;
+  --btn-edge-danger-hover: transparent;
 
-  /* ============================================================
-     8c. MATERIAL AKSI (tombol)
-     Bayangan berubah per state (rest / hover / active), jadi
-     didefinisikan sebagai token utuh agar komponen tidak
-     menulis rgba sendiri.
-     ============================================================ */
-
-  /* Kilau vertikal khas tombol Apple: terang di atas, gelap di bawah */
-  --btn-sheen: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.24) 0%,
-    rgba(255, 255, 255, 0) 48%,
-    rgba(0, 0, 0, 0.06) 100%
-  );
-  --btn-sheen-danger: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0) 52%,
-    rgba(0, 0, 0, 0.07) 100%
-  );
-
-  --btn-edge: rgba(255, 255, 255, 0.24);
-  --btn-edge-hover: rgba(255, 255, 255, 0.4);
-  --btn-edge-danger: rgba(255, 255, 255, 0.22);
-  --btn-edge-danger-hover: rgba(255, 255, 255, 0.36);
-
-  /* Tombol utama */
-  --btn-primary-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.34),
-    0 1px 2px rgba(var(--rgb-brand-800), 0.24),
-    0 6px 16px -6px rgba(var(--rgb-brand-600), 0.5);
-  --btn-primary-shadow-hover: inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
-    0 2px 4px rgba(var(--rgb-brand-800), 0.26),
-    0 10px 22px -8px rgba(var(--rgb-brand-600), 0.58);
-  --btn-primary-shadow-active: inset 0 1px 0 0 rgba(255, 255, 255, 0.24),
-    0 1px 2px rgba(var(--rgb-brand-800), 0.3);
-
-  /* Tombol bahaya */
-  --btn-danger-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
-    0 1px 2px rgba(var(--rgb-red-deep), 0.24),
-    0 6px 16px -6px rgba(var(--rgb-red), 0.48);
-  --btn-danger-shadow-hover: inset 0 1px 0 0 rgba(255, 255, 255, 0.36),
-    0 2px 4px rgba(var(--rgb-red-deep), 0.26),
-    0 10px 22px -8px rgba(var(--rgb-red), 0.56);
-
-  /* Tombol sekunder / hantu (kaca) */
-  --btn-soft-shadow: var(--glass-highlight), 0 1px 2px rgba(var(--rgb-ink), 0.06);
-  --btn-soft-shadow-hover: var(--glass-highlight), 0 2px 6px rgba(var(--rgb-ink), 0.1);
+  --btn-primary-shadow: none;
+  --btn-primary-shadow-hover: none;
+  --btn-primary-shadow-active: none;
+  --btn-danger-shadow: none;
+  --btn-danger-shadow-hover: none;
+  --btn-soft-shadow: none;
+  --btn-soft-shadow-hover: none;
 
   /* ============================================================
-     9. MOTION
-     ------------------------------------------------------------
-     --transition-* dipakai lama sebagai:
-       transition: all var(--transition-fast);
-     Jadi nilainya harus "durasi easing" (bukan easing saja).
+     9. MOTION — singkat
      ============================================================ */
-  --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
-  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-emphasized: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.4, 0, 0.2, 1);
 
   --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 400ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
 
-   --transition-fast: var(--duration-fast) var(--ease-out);
-   --transition-base: var(--duration-base) var(--ease-out);
-   --transition-slow: var(--duration-slow) var(--ease-emphasized);
+  --transition-fast: var(--duration-fast) var(--ease-out);
+  --transition-base: var(--duration-base) var(--ease-out);
+  --transition-slow: var(--duration-slow) var(--ease-out);
 
-   /* ------------------------------------------------------------
-      MOTION — Animation System (Phase 1)
-      ------------------------------------------------------------
-      Token sistem animasi reusable untuk seluruh website.
-      Dipakai oleh animations.css. Token lama di atas
-      (--ease-out, --duration-*, --transition-*) tetap dipertahankan
-      agar CSS existing tidak patah.
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur-menu: 160ms;
+  --dur-base: 200ms;
+  --dur-slow: 250ms;
 
-      PRINSIP: hanya properti GPU-friendly yang dianimasikan
-      (transform, opacity, background-color, box-shadow,
-      border-color). Tidak ada animasi width/height/top/left,
-      tidak ada bounce/shake berulang.
-      ------------------------------------------------------------ */
-   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-   --dur-fast: 120ms;
-   --dur-menu: 160ms;
-   --dur-base: 200ms;
-   --dur-slow: 320ms;
+  --anim-fast: var(--dur-fast) var(--ease);
+  --anim-base: var(--dur-base) var(--ease);
+  --anim-slow: var(--dur-slow) var(--ease);
 
-   /* Kombinasi siap pakai (durasi + easing) */
-   --anim-fast: var(--dur-fast) var(--ease);
-   --anim-base: var(--dur-base) var(--ease);
-   --anim-slow: var(--dur-slow) var(--ease);
-
-   /* ============================================================
-      10. Z-INDEX
+  /* ============================================================
+     10. Z-INDEX
      ============================================================ */
   --z-base: 0;
   --z-dropdown: 100;
@@ -448,98 +287,66 @@
   --z-max: 9999;
 
   /* ============================================================
-     11. LAYAR
-     Hanya referensi — CSS custom property TIDAK bisa dipakai
-     di dalam @media, jadi nilai ini ditulis ulang di file yang
-     butuh breakpoint.
-       sm  640px | md  768px | lg  1024px | xl  1280px
+     11. LAYAR (referensi; sm 640 | md 768 | lg 1024 | xl 1280)
      ============================================================ */
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
   --container-content: 1200px;
+
+  /* Sidebar */
+  --sidebar-width: 248px;
 }
 
 /* ============================================================
-   DARK MODE
-   ------------------------------------------------------------
-   Hanya token SEMANTIK yang di-override; palet primitif tidak
-   berubah. Semua komponen memakai var(--...), jadi seluruh UI
-   ikut berganti lewat atribut data-theme="dark" di <html>.
-   Material glass tetap: translucent, blur, border tipis,
-   highlight, dan shadow — hanya nilai dasarnya yang gelap.
+   DARK MODE — token semantik solid versi gelap
    ============================================================ */
 :root[data-theme='dark'] {
-  /* Latar */
-  --bg-primary: rgba(11, 13, 18, 0.72);
-  --bg-secondary: #1b1e25;
-  --bg-tertiary: #262a33;
-  --bg-glass: rgba(22, 25, 32, 0.6);
-  --bg-inverse: #f2f4f8;
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #273449;
+  --bg-glass: #1e293b;
+  --bg-inverse: #f1f5f9;
   --text-inverse: #ffffff;
-  --bg-scrim: rgba(2, 4, 8, 0.6);
+  --bg-scrim: rgba(2, 6, 23, 0.65);
+  --canvas-gradient: none;
 
-  /* Kanvas aurora gelap — "isi" di balik backdrop-filter */
-  --canvas-gradient:
-    radial-gradient(1200px 800px at 12% -8%, rgba(0, 122, 255, 0.22), transparent 60%),
-    radial-gradient(900px 700px at 92% 4%, rgba(10, 132, 255, 0.16), transparent 58%),
-    radial-gradient(1000px 700px at 78% 100%, rgba(52, 199, 89, 0.1), transparent 62%),
-    radial-gradient(800px 600px at 8% 96%, rgba(255, 149, 0, 0.08), transparent 60%),
-    linear-gradient(180deg, #0c0e13 0%, #10131a 100%);
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-disabled: #64748b;
+  --text-link: #93c5fd;
 
-  /* Teks */
-  --text-primary: #f2f4f8;
-  --text-secondary: #b9c0cc;
-  --text-tertiary: #8d95a3;
-  --text-disabled: #5f6673;
-  --text-link: #5ab1ff;
+  --color-gray-50: #1e293b;
+  --color-gray-100: #273449;
+  --color-gray-200: #334155;
+  --color-gray-300: #475569;
+  --color-gray-400: #64748b;
 
-  /* Netral siap pakai (dipakai tabel/skeleton/form) */
-  --color-gray-50: #1f232b;
-  --color-gray-100: #262a33;
-  --color-gray-200: #323742;
-  --color-gray-300: #404653;
-  --color-gray-400: #4d5462;
+  --color-primary-light: rgba(37, 99, 235, 0.22);
+  --color-primary-soft: rgba(37, 99, 235, 0.25);
+  --color-badge-blue: #93c5fd;
+  --color-badge-blue-bg: rgba(147, 197, 253, 0.16);
+  --color-success-light: #14532d;
+  --color-warning-light: #451a03;
+  --color-error-light: #450a0a;
 
-  /* Warna status pada latar gelap */
-  --color-primary-light: rgba(0, 122, 255, 0.24);
-  --color-primary-soft: rgba(0, 122, 255, 0.2);
-  --color-badge-blue: #6b9bff;
-  --color-badge-blue-bg: rgba(107, 155, 255, 0.16);
-  --color-success-light: #143829;
-  --color-warning-light: #3a2d0e;
-  --color-error-light: #3a1417;
+  --glass-bg-thin: #1e293b;
+  --glass-bg: #1e293b;
+  --glass-bg-thick: #273449;
+  --glass-bg-solid: #1e293b;
+  --glass-border: #334155;
+  --glass-border-subtle: #334155;
+  --glass-border-hover: #475569;
+  --glass-divider: #334155;
+  --glass-surface-hover: #273449;
 
-  /* Material glass — gelap, tetap translucent + blur */
-  --glass-bg-thin: rgba(22, 25, 32, 0.4);
-  --glass-bg: rgba(22, 25, 32, 0.62);
-  --glass-bg-thick: rgba(28, 31, 40, 0.8);
-  --glass-bg-solid: rgba(15, 17, 22, 0.94);
+  --border-light: #334155;
+  --border-medium: #475569;
+  --border-strong: #64748b;
 
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-border-subtle: rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(255, 255, 255, 0.26);
-  --glass-divider: rgba(255, 255, 255, 0.1);
-  --glass-surface-hover: rgba(38, 42, 51, 0.95);
-
-  --glass-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
-  --glass-highlight-soft: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-
-  --glass-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
-    0 10px 28px -12px rgba(0, 0, 0, 0.5);
-  --glass-shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.24),
-    0 24px 56px -20px rgba(0, 0, 0, 0.55);
-
-  /* Border tabel/divider */
-  --border-light: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.14);
-  --border-strong: rgba(255, 255, 255, 0.22);
-
-  /* Shadow tombol kaca */
-  --btn-soft-shadow: var(--glass-highlight), 0 1px 2px rgba(0, 0, 0, 0.3);
-  --btn-soft-shadow-hover: var(--glass-highlight), 0 2px 6px rgba(0, 0, 0, 0.4);
-  --shadow-inner: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-inner: none;
 }
 
 /* ============================================================
@@ -553,8 +360,6 @@
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-slow: 0ms;
-
-    /* Animation system (Phase 1) */
     --dur-fast: 0ms;
     --dur-base: 0ms;
     --dur-slow: 0ms;

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import './TeacherPortal.css';
 
@@ -75,6 +74,19 @@ const teacherMenuItems: TeacherMenuItem[] = [
     route: '/exams/manage',
     category: 'assessment',
   },
+  {
+    id: 'koreksi',
+    label: 'Koreksi Nilai',
+    description: 'Periksa jawaban dan koreksi nilai ujian siswa',
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+      </svg>
+    ),
+    route: '/correction',
+    category: 'assessment',
+  },
 ];
 
 const EmptyState = ({ description }: { description: string }) => (
@@ -97,11 +109,19 @@ const getTodayName = () => {
 
 const formatTime = (time?: string) => time?.substring(0, 5) || '--:--';
 
+const formatDeadline = (value?: string) => {
+  if (!value) return 'Tanpa tenggat';
+  return new Date(value).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'short',
+  });
+};
+
 const TeacherPortal = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [schedules, setSchedules] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<'teaching' | 'content' | 'assessment'>('teaching');
 
@@ -111,12 +131,14 @@ const TeacherPortal = () => {
 
   const fetchPortalData = async () => {
     try {
-      const [schedulesRes, announcementsRes] = await Promise.all([
+      const [schedulesRes, announcementsRes, assignmentsRes] = await Promise.all([
         api.get('/schedules/teacher').catch(() => ({ data: { data: [] } })),
         api.get('/announcements/latest').catch(() => ({ data: { data: [] } })),
+        api.get('/assignments/teacher').catch(() => ({ data: { data: [] } })),
       ]);
       setSchedules(schedulesRes.data.data);
       setAnnouncements(announcementsRes.data.data);
+      setAssignments(assignmentsRes.data.data);
     } catch (error) {
       console.error('Error fetching teacher portal data:', error);
     } finally {
@@ -145,139 +167,143 @@ const TeacherPortal = () => {
 
   return (
     <div className="teacher-dashboard">
-      {/* Teaching Focus Header */}
-      <section className="teaching-focus" aria-label="Fokus Mengajar Hari Ini">
-        <div className="focus-card">
-          <div className="focus-icon">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-            </svg>
-          </div>
-          <div className="focus-content">
-            <p className="focus-label">Fokus Hari Ini</p>
-            <h2 className="focus-title">{getTodayName()}</h2>
-            <p className="focus-subtitle">
-              {todaySchedules.length > 0
-                ? `${todaySchedules.length} jam mengajar`
-                : 'Tidak ada jadwal mengajar hari ini'}
-            </p>
-          </div>
-          <div className="focus-meta">
-            {user?.name && (
-              <span className="focus-teacher">Guru: {user.name}</span>
-            )}
-          </div>
+      <header className="teacher-dashboard-header">
+        <div>
+          <p className="dashboard-kicker">Agenda guru</p>
+          <h1 className="dashboard-title">Agenda Mengajar</h1>
+          <p className="dashboard-subtitle">
+            {getTodayName()} &middot; {todaySchedules.length} sesi &middot; {assignments.length} tugas
+          </p>
         </div>
-      </section>
+        <div className="teacher-focus-count" aria-label={`${todaySchedules.length} sesi hari ini`}>
+          <strong>{todaySchedules.length}</strong>
+          <span>sesi hari ini</span>
+        </div>
+      </header>
 
-      {/* Today's Schedule */}
-      <section className="schedule-section">
-        <div className="section-header">
-          <h2 className="section-title">Jadwal Mengajar Hari Ini</h2>
-          <p className="schedule-day">{getTodayName()}</p>
-        </div>
-        <div className="section-content">
-          {todaySchedules.length > 0 ? (
-            <div className="schedule-list">
-              {todaySchedules.map((schedule, index) => (
-                <div key={index} className="schedule-item">
-                  <div className="schedule-time">
-                    {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
-                  </div>
-                  <div className="schedule-info">
-                    <h3 className="schedule-subject">{schedule.subject_name}</h3>
-                    <p className="schedule-class">{schedule.class_name}</p>
-                    {schedule.room && <p className="schedule-room">Ruang: {schedule.room}</p>}
-                  </div>
-                  <div className="schedule-status">
-                    <span className={`status-badge status-${schedule.status}`}>
-                      {schedule.status === 'ongoing' ? 'Sedang Berlangsung' :
-                       schedule.status === 'completed' ? 'Selesai' : 'Akan Datang'}
-                    </span>
-                  </div>
-                </div>
-              ))}
+      <div className="teacher-layout">
+        <section className="agenda-panel" aria-labelledby="teacher-schedule-title">
+          <div className="panel-head">
+            <div>
+              <h2 id="teacher-schedule-title" className="dashboard-section-title">Jadwal Hari Ini</h2>
+              <p className="dashboard-section-desc">{getTodayName()}</p>
             </div>
+            <button type="button" className="text-action" onClick={() => navigate('/schedules')}>
+              Semua jadwal
+            </button>
+          </div>
+
+          {todaySchedules.length > 0 ? (
+            <ol className="agenda-timeline">
+              {todaySchedules.map((schedule, index) => (
+                <li key={index} className="agenda-item">
+                  <div className="agenda-time">
+                    <strong>{formatTime(schedule.start_time)}</strong>
+                    <span>{formatTime(schedule.end_time)}</span>
+                  </div>
+                  <span
+                    className={`agenda-marker agenda-marker--${schedule.status || 'upcoming'}`}
+                    aria-hidden="true"
+                  />
+                  <div className="agenda-body">
+                    <div className="agenda-title-row">
+                      <h3 className="agenda-title">{schedule.subject_name}</h3>
+                      <span className={`status-badge status-${schedule.status}`}>
+                        {schedule.status === 'ongoing' ? 'Berlangsung' :
+                         schedule.status === 'completed' ? 'Selesai' : 'Akan Datang'}
+                      </span>
+                    </div>
+                    <p className="agenda-meta">
+                      {schedule.class_name}
+                      {schedule.room ? ` · Ruang ${schedule.room}` : ''}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           ) : (
             <EmptyState description="Tidak ada jadwal mengajar hari ini." />
           )}
-        </div>
-      </section>
+        </section>
 
-      {/* Quick Stats */}
-      <div className="content-grid">
-        {/* Announcements */}
-        <section className="info-section">
-          <div className="section-header">
-            <h2 className="section-title">Pengumuman Terbaru</h2>
-          </div>
-          <div className="section-content">
+        <aside className="teacher-aside" aria-label="Aktivitas dan informasi">
+          <section className="side-block">
+            <div className="side-block-head">
+              <h2 className="dashboard-section-title">Tenggat Terdekat</h2>
+              <button type="button" className="text-action" onClick={() => navigate('/assignments')}>
+                Semua
+              </button>
+            </div>
+            {assignments.length > 0 ? (
+              <ul className="side-list">
+                {assignments.slice(0, 3).map((assignment) => (
+                  <li key={assignment.id} className="side-list-item">
+                    <span className="side-list-title">{assignment.title}</span>
+                    <span className="side-list-meta">
+                      {assignment.subject_name || 'Mata pelajaran'} &middot; {assignment.class_name || '-'}
+                    </span>
+                    <span className="side-list-deadline">{formatDeadline(assignment.deadline)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState description="Tidak ada tugas mendatang." />
+            )}
+          </section>
+
+          <section className="side-block">
+            <div className="side-block-head">
+              <h2 className="dashboard-section-title">Pengumuman</h2>
+              <span className="aside-count">{announcements.length}</span>
+            </div>
             {announcements.length > 0 ? (
               <div className="announcement-list">
-                {announcements.slice(0, 3).map((announcement, index) => (
-                  <div key={index} className="announcement-item">
+                {announcements.slice(0, 2).map((announcement, index) => (
+                  <article key={index} className="announcement-item">
                     <h3 className="announcement-title">{announcement.title}</h3>
                     <p className="announcement-content">{announcement.content}</p>
                     {announcement.created_at && (
                       <time className="announcement-date" dateTime={announcement.created_at}>
                         {new Date(announcement.created_at).toLocaleDateString('id-ID', {
-                          weekday: 'long',
                           day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
+                          month: 'short',
                         })}
                       </time>
                     )}
-                  </div>
+                  </article>
                 ))}
               </div>
             ) : (
-              <EmptyState description="Belum ada pengumuman yang tersedia." />
+              <EmptyState description="Belum ada pengumuman." />
             )}
-          </div>
-        </section>
+          </section>
 
-        {/* Reminders */}
-        <section className="reminders-section">
-          <div className="section-header">
-            <h2 className="section-title">Perlu Perhatian</h2>
-          </div>
-          <div className="section-content">
-            <div className="reminder-list">
-              <div className="reminder-item">
-                <div className="reminder-icon info">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="16" x2="12" y2="12" />
-                    <line x1="12" y1="8" x2="12.01" y2="8" />
-                  </svg>
-                </div>
-                <div className="reminder-content">
-                  <p className="reminder-title">Materi tersedia</p>
-                  <p className="reminder-desc">Lihat materi pembelajaran di menu Materi</p>
-                </div>
-              </div>
-              <div className="reminder-item">
-                <div className="reminder-icon success">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                    <polyline points="22 4 12 14.01 9 11.01" />
-                  </svg>
-                </div>
-                <div className="reminder-content">
-                  <p className="reminder-title">Ujian tersedia</p>
-                  <p className="reminder-desc">Kelola ujian di menu Ujian (Full CRUD)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+          <section className="side-block">
+            <h2 className="dashboard-section-title">Perlu Perhatian</h2>
+            <ul className="attention-list">
+              <li>
+                <button type="button" className="attention-link" onClick={() => navigate('/materials')}>
+                  Materi pembelajaran siap digunakan
+                </button>
+              </li>
+              <li>
+                <button type="button" className="attention-link" onClick={() => navigate('/exams/manage')}>
+                  Kelola ujian dan nilai siswa
+                </button>
+              </li>
+            </ul>
+          </section>
+        </aside>
       </div>
 
-      {/* Module Navigation by Category */}
-      <section className="modules-section">
-        <div className="category-tabs">
+      <section className="quick-panel" aria-labelledby="teacher-menu-title">
+        <div className="quick-panel-head">
+          <div>
+            <h2 id="teacher-menu-title" className="dashboard-section-title">Menu Kerja</h2>
+            <p className="dashboard-section-desc">Akses modul pengajaran dan penilaian.</p>
+          </div>
+        </div>
+        <div className="category-tabs" role="tablist" aria-label="Kategori menu guru">
           {[
             { key: 'teaching', label: 'Mengajar', count: teacherMenuItems.filter(i => i.category === 'teaching').length },
             { key: 'content', label: 'Konten', count: teacherMenuItems.filter(i => i.category === 'content').length },
@@ -285,6 +311,9 @@ const TeacherPortal = () => {
           ].map((cat) => (
             <button
               key={cat.key}
+              type="button"
+              role="tab"
+              aria-selected={activeCategory === cat.key}
               className={`category-tab ${activeCategory === cat.key ? 'active' : ''}`}
               onClick={() => setActiveCategory(cat.key as typeof activeCategory)}
             >
@@ -294,25 +323,24 @@ const TeacherPortal = () => {
           ))}
         </div>
 
-        <div className="modules-grid reveal-grid">
+        <div className="quick-links">
           {filteredItems.map((item) => (
             <button
               key={item.id}
-              className="teacher-module-card"
+              type="button"
+              className="quick-link"
               onClick={() => handleMenuClick(item)}
             >
-              <div className="module-icon-wrapper">
-                <div className="module-icon">{item.icon}</div>
-              </div>
-              <div className="module-content">
-                <h3 className="module-title">{item.label}</h3>
-                <p className="module-description">{item.description}</p>
-              </div>
-              <div className="module-arrow" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <span className="quick-link-icon" aria-hidden="true">{item.icon}</span>
+              <span className="quick-link-content">
+                <span className="quick-link-title">{item.label}</span>
+                <span className="quick-link-description">{item.description}</span>
+              </span>
+              <span className="quick-link-arrow" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
-              </div>
+              </span>
             </button>
           ))}
         </div>

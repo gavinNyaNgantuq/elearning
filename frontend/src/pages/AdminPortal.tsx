@@ -204,6 +204,11 @@ const AdminPortal = () => {
   };
 
   const filteredItems = adminMenuItems.filter(item => item.category === activeCategory);
+  const categoryMeta = {
+    master: { label: 'Data Master', description: 'Data induk siswa, guru, kelas, mata pelajaran, dan tahun ajaran.' },
+    akademik: { label: 'Akademik', description: 'Jadwal, materi, tugas, dan ujian.' },
+    informasi: { label: 'Informasi', description: 'Pengumuman dan informasi sekolah.' },
+  }[activeCategory];
 
   if (loading) {
     return <LoadingState />;
@@ -211,79 +216,97 @@ const AdminPortal = () => {
 
   return (
     <div className="admin-dashboard">
-      {/* Module Navigation by Category */}
-      <section className="modules-section">
-        <div className="category-tabs">
-          {[
-            { key: 'master', label: 'Data Master', count: adminMenuItems.filter(i => i.category === 'master').length },
-            { key: 'akademik', label: 'Akademik', count: adminMenuItems.filter(i => i.category === 'akademik').length },
-            { key: 'informasi', label: 'Informasi', count: adminMenuItems.filter(i => i.category === 'informasi').length },
-          ].map((cat) => (
-            <button
-              key={cat.key}
-              className={`category-tab ${activeCategory === cat.key ? 'active' : ''}`}
-              onClick={() => setActiveCategory(cat.key as typeof activeCategory)}
-            >
-              <span>{cat.label}</span>
-              <span className="tab-badge">{cat.count}</span>
-            </button>
-          ))}
+      <header className="admin-dashboard-header">
+        <div>
+          <p className="dashboard-kicker">Ruang kerja admin</p>
+          <h1 className="dashboard-title">Dashboard Admin</h1>
+          <p className="dashboard-subtitle">Akses cepat data master dan operasional akademik.</p>
         </div>
+        <p className="admin-category-summary" aria-live="polite">
+          {filteredItems.length} modul &middot; {categoryMeta.label}
+        </p>
+      </header>
 
-        <div className="modules-grid reveal-grid">
-          {filteredItems.map((item) => (
-            <button
-              key={item.id}
-              className="admin-module-card"
-              onClick={() => handleMenuClick(item)}
-            >
-              <div className="module-icon-wrapper">
-                <div className="module-icon">{item.icon}</div>
-              </div>
-              <div className="module-content">
-                <h3 className="module-title">{item.label}</h3>
-                <p className="module-description">{item.description}</p>
-              </div>
-              <div className="module-arrow" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
+      <div className="admin-layout">
+        <section className="module-index" aria-label={`Modul ${categoryMeta.label}`}>
+          <div className="module-index-head">
+            <div>
+              <h2 className="dashboard-section-title">{categoryMeta.label}</h2>
+              <p className="dashboard-section-desc">{categoryMeta.description}</p>
+            </div>
+          </div>
 
-      {/* Recent Announcements */}
-      <section className="info-section">
-        <div className="section-header">
-          <h2 className="section-title">Pengumuman Terbaru</h2>
-        </div>
-        <div className="section-content">
+          <div className="category-tabs" role="tablist" aria-label="Kategori modul">
+            {[
+              { key: 'master', label: 'Data Master', count: adminMenuItems.filter(i => i.category === 'master').length },
+              { key: 'akademik', label: 'Akademik', count: adminMenuItems.filter(i => i.category === 'akademik').length },
+              { key: 'informasi', label: 'Informasi', count: adminMenuItems.filter(i => i.category === 'informasi').length },
+            ].map((cat) => (
+              <button
+                key={cat.key}
+                type="button"
+                role="tab"
+                aria-selected={activeCategory === cat.key}
+                className={`category-tab ${activeCategory === cat.key ? 'active' : ''}`}
+                onClick={() => setActiveCategory(cat.key as typeof activeCategory)}
+              >
+                <span>{cat.label}</span>
+                <span className="tab-badge">{cat.count}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="module-list">
+            {filteredItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className="module-row"
+                onClick={() => handleMenuClick(item)}
+              >
+                <span className="module-row-icon" aria-hidden="true">{item.icon}</span>
+                <span className="module-row-content">
+                  <span className="module-row-title">{item.label}</span>
+                  <span className="module-row-description">{item.description}</span>
+                </span>
+                <span className="module-row-arrow" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <aside className="admin-aside" aria-label="Pengumuman terbaru">
+          <div className="aside-head">
+            <h2 className="dashboard-section-title">Pengumuman</h2>
+            <span className="aside-count">{announcements.length}</span>
+          </div>
           {announcements.length > 0 ? (
             <div className="announcement-list">
               {announcements.slice(0, 3).map((announcement, index) => (
-                <div key={index} className="announcement-item">
+                <article key={index} className="announcement-item">
                   <h3 className="announcement-title">{announcement.title}</h3>
                   <p className="announcement-content">{announcement.content}</p>
                   {announcement.created_at && (
                     <time className="announcement-date" dateTime={announcement.created_at}>
                       {new Date(announcement.created_at).toLocaleDateString('id-ID', {
-                        weekday: 'long',
                         day: 'numeric',
-                        month: 'long',
+                        month: 'short',
                         year: 'numeric',
                       })}
                     </time>
                   )}
-                </div>
+                </article>
               ))}
             </div>
           ) : (
-            <EmptyState description="Belum ada pengumuman yang tersedia." />
+            <EmptyState description="Belum ada pengumuman." />
           )}
-        </div>
-      </section>
+        </aside>
+      </div>
     </div>
   );
 }

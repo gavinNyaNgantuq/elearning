@@ -12,6 +12,7 @@ export default function ExamPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<number, 'A' | 'B' | 'C' | 'D'>>({});
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [examTitle, setExamTitle] = useState('Ujian');
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -21,18 +22,20 @@ export default function ExamPage() {
   }, [token]);
 
   useEffect(() => {
+    if (loading) return;
     if (timeLeft <= 0) {
       handleSubmit();
       return;
     }
     const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, loading]);
 
   const fetchQuestions = async () => {
     try {
       const response = await api.get(`/exams/${token}/questions`);
       setQuestions(response.data.data.questions);
+      setExamTitle(response.data.data.exam.title || 'Ujian');
       setTimeLeft(response.data.data.exam.duration * 60);
     } catch (error) {
       console.error('Error fetching questions:', error);
@@ -89,16 +92,17 @@ export default function ExamPage() {
   }
 
   const question = questions[currentQuestion];
+  const answeredCount = questions.filter((q) => answers[q.id]).length;
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (
     <div className="exam-page">
       <div className="exam-header">
         <div className="exam-info">
-          <h1 className="exam-title">Ujian</h1>
-          <p className="exam-subtitle">Soal {currentQuestion + 1} dari {questions.length}</p>
+          <h1 className="exam-title">{examTitle}</h1>
+          <p className="exam-subtitle">Soal {currentQuestion + 1} dari {questions.length} &middot; {answeredCount} terjawab</p>
         </div>
-        <div className={`exam-timer ${timeLeft < 300 ? 'timer-warning' : ''}`}>
+        <div className={`exam-timer ${timeLeft < 300 ? 'timer-warning' : ''}`} role="timer" aria-label={`Sisa waktu ${formatTime(timeLeft)}`}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="10" />
             <polyline points="12 6 12 12 16 14" />
@@ -107,51 +111,93 @@ export default function ExamPage() {
         </div>
       </div>
 
-      <div className="progress-bar">
+      <div className="progress-bar" aria-hidden="true">
         <div className="progress-fill" style={{ width: `${progress}%` }} />
       </div>
 
-      <Card className="question-card">
-        <h2 className="question-text">{question.question}</h2>
+      <div className="exam-layout">
+        <div className="exam-main">
+          <Card className="question-card">
+            <h2 className="question-text">{question.question}</h2>
 
-        <div className="options-list">
-          {['A', 'B', 'C', 'D'].map((option) => (
-            <button
-              key={option}
-              onClick={() => handleAnswer(question.id, option as 'A' | 'B' | 'C' | 'D')}
-              className={`option-button ${answers[question.id] === option ? 'option-selected' : ''}`}
+            <div className="options-list" role="radiogroup" aria-label={`Pilihan jawaban soal ${currentQuestion + 1}`}>
+              {['A', 'B', 'C', 'D'].map((option) => (
+                <button
+                  key={option}
+                  role="radio"
+                  aria-checked={answers[question.id] === option}
+                  onClick={() => handleAnswer(question.id, option as 'A' | 'B' | 'C' | 'D')}
+                  className={`option-button ${answers[question.id] === option ? 'option-selected' : ''}`}
+                >
+                  <span className="option-letter" aria-hidden="true">{option}</span>
+                  <span className="option-text">{question[`option_${option.toLowerCase()}` as keyof Question]}</span>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          <div className="exam-navigation">
+            <Button
+              variant="secondary"
+              onClick={() => setCurrentQuestion((c) => Math.max(0, c - 1))}
+              disabled={currentQuestion === 0}
             >
-              <span className="option-letter">{option}</span>
-              <span className="option-text">{question[`option_${option.toLowerCase()}` as keyof Question]}</span>
-            </button>
-          ))}
+              Sebelumnya
+            </Button>
+            {currentQuestion < questions.length - 1 ? (
+              <Button
+                variant="primary"
+                onClick={() => setCurrentQuestion((c) => c + 1)}
+              >
+                Selanjutnya
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={handleSubmit}
+                loading={submitting}
+              >
+                Kumpulkan Jawaban
+              </Button>
+            )}
+          </div>
         </div>
-      </Card>
 
-      <div className="exam-navigation">
-        <Button
-          variant="secondary"
-          onClick={() => setCurrentQuestion((c) => Math.max(0, c - 1))}
-          disabled={currentQuestion === 0}
-        >
-          Sebelumnya
-        </Button>
-        {currentQuestion < questions.length - 1 ? (
-          <Button
-            variant="primary"
-            onClick={() => setCurrentQuestion((c) => c + 1)}
-          >
-            Selanjutnya
-          </Button>
-        ) : (
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            loading={submitting}
-          >
-            Submit Jawaban
-          </Button>
-        )}
+        <aside className="exam-side" aria-label="Navigasi soal">
+          <div className="question-nav">
+            <p className="question-nav-title">Nomor Soal</p>
+            <div className="question-nav-grid">
+              {questions.map((q, idx) => {
+                const isAnswered = !!answers[q.id];
+                const isCurrent = idx === currentQuestion;
+                return (
+                  <button
+                    key={q.id}
+                    type="button"
+                    onClick={() => setCurrentQuestion(idx)}
+                    className={`question-nav-btn${isCurrent ? ' is-current' : ''}${isAnswered ? ' is-answered' : ''}`}
+                    aria-label={`Soal ${idx + 1}${isAnswered ? ', sudah dijawab' : ', belum dijawab'}${isCurrent ? ', aktif' : ''}`}
+                    aria-current={isCurrent ? 'true' : undefined}
+                  >
+                    {idx + 1}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="question-nav-legend">
+              <span className="legend-item"><span className="legend-swatch is-answered" aria-hidden="true" /> Terjawab</span>
+              <span className="legend-item"><span className="legend-swatch" aria-hidden="true" /> Belum</span>
+            </div>
+            <Button
+              variant="secondary"
+              onClick={handleSubmit}
+              loading={submitting}
+              className="question-nav-submit"
+            >
+              Kumpulkan
+            </Button>
+          </div>
+        </aside>
       </div>
     </div>
   );

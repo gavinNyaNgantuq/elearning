@@ -1,39 +1,20 @@
-/* Login Page - Liquid Glass Two-Sided Layout */
+/* Login Page — Clean Modern, dua panel */
 .login-page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-lg);
-  background: var(--canvas-gradient, linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 50%, #e2e8f0 100%));
-  background-attachment: fixed;
-  overflow-x: hidden;
+  align-items: stretch;
+  background: var(--bg-primary);
 }
 
-/* Left side: School branding/visual */
+/* Kiri: panel identitas sekolah */
 .login-left {
   flex: 1;
-  max-width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-md);
-  position: relative;
-  pointer-events: none;
-}
-
-.login-left::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-2xl);
-  padding: var(--spacing-md);
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border: var(--border-width-thin) solid var(--glass-border);
-  opacity: 0.9;
-  pointer-events: auto;
+  padding: var(--spacing-2xl);
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .school-visual {
@@ -42,146 +23,124 @@
   align-items: center;
   gap: var(--spacing-md);
   text-align: center;
-  width: 100%;
-  max-width: 400px;
+  max-width: 380px;
 }
 
 .school-logo-large {
-  width: 120px;
-  height: 120px;
+  width: 96px;
+  height: 96px;
   object-fit: contain;
   border-radius: var(--radius-xl);
-  background: var(--bg-secondary);
-  padding: var(--spacing-md);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-lg);
+  background: #fff;
+  padding: var(--spacing-sm);
 }
 
-.school-name {
+.school-visual .school-name {
   font-size: var(--font-size-2xl);
-  font-weight: 700;
-  color: var(--text-primary);
+  font-weight: var(--font-weight-bold);
+  color: #fff;
   margin: 0;
-  letter-spacing: 0.3px;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .school-desc {
   font-size: var(--font-size-md);
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.85);
   margin: 0;
-  max-width: 320px;
 }
 
 .school-tagline {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--color-primary);
-  letter-spacing: 0.02em;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-caps);
+  text-transform: uppercase;
+  color: #fff;
   margin: 0;
-  display: inline-flex;
-  align-items: center;
-  padding: var(--spacing-xxxs) var(--spacing-sm);
-  background: var(--color-primary-soft);
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-full);
   white-space: nowrap;
 }
 
-/* Right side: Login panel */
+/* Kanan: form login */
 .login-right {
   flex: 1;
-  max-width: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-md);
-  pointer-events: auto;
+  padding: var(--spacing-2xl);
 }
 
 .login-card {
   width: 100%;
   max-width: 400px;
-  background: var(--glass-bg);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border: var(--border-width-thin) solid var(--glass-border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-2xl) var(--spacing-xl);
-  box-shadow: var(--glass-shadow), var(--glass-highlight);
-  animation: slideUp 0.4s ease-out;
-  color: var(--text-primary);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-md);
+  animation: kf-rise var(--dur-base) var(--ease) both;
 }
 
 .login-header {
-  text-align: center;
+  text-align: left;
   margin-bottom: var(--spacing-xl);
 }
 
 .login-logo {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
-  border-radius: var(--radius-lg);
-  background: var(--bg-secondary);
-  padding: var(--spacing-sm);
-  border: 1px solid var(--glass-border);
-  margin: 0 auto var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  padding: 6px;
+  margin-bottom: var(--spacing-md);
 }
 
 .login-title {
   font-size: var(--font-size-2xl);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
-  letter-spacing: var(--letter-spacing-tight);
+  margin: 0 0 4px;
 }
 
 .login-subtitle {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
-  margin-bottom: var(--spacing-lg);
-  letter-spacing: var(--letter-spacing-snug);
+  margin: 0;
 }
 
-/* Form */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 /* Password toggle */
 .password-toggle {
   position: absolute;
-  right: var(--spacing-sm);
+  right: 6px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
   color: var(--text-tertiary);
   cursor: pointer;
-  padding: var(--spacing-xs);
+  padding: 8px;
+  min-width: 40px;
+  min-height: 40px;
   border-radius: var(--radius-sm);
-  transition:
-    color var(--dur-base) var(--ease),
-    background-color var(--dur-base) var(--ease),
-    transform var(--dur-base) var(--ease);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--spacing-md);
-  height: var(--spacing-md);
 }
 
 .password-toggle:hover {
   color: var(--text-secondary);
-  background: var(--glass-bg-thin);
-  transform: translateY(calc(-50% - 1px));
-}
-
-.password-toggle:active {
-  transform: translateY(-50%) scale(0.96);
-  transition-duration: var(--dur-fast);
+  background: var(--bg-tertiary);
 }
 
 .password-toggle:focus-visible {
@@ -189,13 +148,13 @@
   box-shadow: var(--shadow-focus);
 }
 
-/* Remember me + forgot link */
+/* Remember + lupa password */
 .login-options {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-sm);
-  margin-top: var(--spacing-xs);
+  margin-top: 2px;
 }
 
 .remember-me {
@@ -204,11 +163,12 @@
   gap: var(--spacing-sm);
   cursor: pointer;
   user-select: none;
+  min-height: 40px;
 }
 
 .remember-me input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   accent-color: var(--color-primary);
   cursor: pointer;
 }
@@ -222,8 +182,7 @@
   font-size: var(--font-size-sm);
   color: var(--color-primary);
   text-decoration: none;
-  font-weight: 500;
-  transition: color var(--transition-fast);
+  font-weight: var(--font-weight-medium);
 }
 
 .forgot-link:hover {
@@ -232,11 +191,11 @@
   text-underline-offset: 0.2em;
 }
 
-/* Error state */
+/* Error */
 .login-error {
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-error-light);
-  border: 1px solid var(--color-error);
+  border: 1px solid #fecaca;
   border-radius: var(--radius-md);
   margin-top: var(--spacing-sm);
   animation: kf-fade-in var(--dur-fast) var(--ease) both;
@@ -249,58 +208,29 @@
   margin: 0;
 }
 
-/* Button */
 .login-button {
   width: 100%;
   margin-top: var(--spacing-sm);
 }
 
-/* Animation */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
+/* ------------------------------------------------------------
+   RESPONSIF
+   ------------------------------------------------------------ */
+@media (max-width: 900px) {
   .login-page {
-    padding: var(--spacing-md);
-  }
-
-  .login-left,
-  .login-right {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .login-page {
-    flex-direction: column-reverse;
-    padding: var(--spacing-md) var(--spacing-sm);
+    flex-direction: column;
   }
 
   .login-left {
-    order: 2;
-    max-width: 100%;
-    padding: var(--spacing-md) 0 0 0;
-  }
-
-  .login-left::before {
-    display: none;
+    padding: var(--spacing-xl) var(--spacing-lg);
   }
 
   .school-logo-large {
-    width: 80px;
-    height: 80px;
+    width: 64px;
+    height: 64px;
   }
 
-  .school-name {
+  .school-visual .school-name {
     font-size: var(--font-size-xl);
   }
 
@@ -309,38 +239,19 @@
   }
 
   .login-right {
-    order: 1;
-    max-width: 100%;
-    width: 100%;
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-2xl);
   }
 
   .login-card {
     padding: var(--spacing-xl) var(--spacing-lg);
-  }
-
-  .login-options {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-xs);
+    box-shadow: none;
+    border: none;
+    background: transparent;
   }
 }
 
-/* Desktop: 1366x768 */
-@media (min-width: 1025px) and (max-width: 1440px) {
-  .login-page {
-    padding: 0;
-  }
-
-  .login-left {
-    max-width: 50%;
-  }
-
-  .login-right {
-    max-width: 50%;
-    padding: var(--spacing-xl) var(--spacing-2xl);
-  }
-
-  .login-card {
-    padding: var(--spacing-2xl) var(--spacing-xl);
+@media (min-width: 901px) {
+  .login-header {
+    text-align: left;
   }
 }

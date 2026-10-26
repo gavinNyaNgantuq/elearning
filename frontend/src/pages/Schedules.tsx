@@ -109,12 +109,22 @@ export default function Schedules() {
   const fetchData = async () => {
     try {
       setError(null);
-      const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
-      const results = await Promise.all(
-        days.map((day) => api.get(`/schedules/day/${day}`).catch(() => ({ data: { data: [] } })))
-      );
-      const all = results.flatMap((r) => r.data.data);
-      setSchedules(all);
+      // Siswa/guru pakai endpoint perannya; admin tetap rekap 7 hari.
+      // Backend tetap menegakkan role per endpoint.
+      if (user?.role === 'siswa') {
+        const res = await api.get('/schedules/student').catch(() => ({ data: { data: [] } }));
+        setSchedules(res.data.data || []);
+      } else if (user?.role === 'guru') {
+        const res = await api.get('/schedules/teacher').catch(() => ({ data: { data: [] } }));
+        setSchedules(res.data.data || []);
+      } else {
+        const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
+        const results = await Promise.all(
+          days.map((day) => api.get(`/schedules/day/${day}`).catch(() => ({ data: { data: [] } })))
+        );
+        const all = results.flatMap((r) => r.data.data);
+        setSchedules(all);
+      }
 
       const [classesRes, subjectsRes, teachersRes] = await Promise.all([
         api.get('/classes').catch(() => ({ data: { data: [] } })),

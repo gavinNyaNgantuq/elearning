@@ -135,7 +135,7 @@ const materialModel = {
     const { teacher_id, subject_id, class_id, title, description, file, link, created_by } = materialData;
     const [result] = await pool.execute(
       `INSERT INTO materials (teacher_id, subject_id, class_id, title, description, file, link, created_at, created_by)
-       VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?)`,
       [teacher_id, subject_id, class_id, title, description || null, file || null, link || null, created_by || 1]
     );
     return { id: result.insertId, ...materialData };
